@@ -1,0 +1,65 @@
+{
+  "slug": "the-thirteenth-witness",
+  "title": "The Thirteenth Witness",
+  "author": "Arthur Pendelton",
+  "genre": "Mystery",
+  "tags": [
+    "Detective",
+    "Whodunit",
+    "Psychological",
+    "Thriller",
+    "Plot Twists"
+  ],
+  "status": "Completed",
+  "contentRating": "Teen",
+  "featured": false,
+  "cover": "assets/covers/the-thirteenth-witness.svg",
+  "views": 78400,
+  "bookmarks": 6120,
+  "powerStones": 4200,
+  "rating": 4.8,
+  "subRatings": {
+    "plot": 5.0,
+    "characters": 4.7,
+    "world": 4.6,
+    "style": 4.9
+  },
+  "synopsis": "Twelve jurors locked inside a snowbound Alpine manor to re-examine a ten-year-old cold case wake up on the second morning to find the courtroom stenographer missing—and a thirteenth place setting neatly laid at the breakfast table.",
+  "totalWords": 91,
+  "chapterCount": 1,
+  "updatedAt": "2026-11-17",
+  "createdAt": "2026-10-30",
+  "glossary": [],
+  "reviews": [],
+  "chapters": [
+    {
+      "id": "the-thirteenth-witness-ch-1",
+      "number": 1,
+      "volume": "Part I: Snowfall",
+      "title": "Chapter 1: Thirteen Spoons",
+      "wordCount": 91,
+      "readMinutes": 1,
+      "publishedAt": "2026-11-17",
+      "authorNoteTop": "",
+      "authorNoteBottom": "",
+      "content": "Inspector Julian Cole counted the silver soup spoons twice before touching his coffee.\n\nTwelve guests had boarded the funicular yesterday evening before the blizzard snapped the traction cable. Twelve coats hung in the mahogany vestibule. Yet along the white linen table, gleaming politely beside the marmalade dish, sat thirteen porcelain plates—and folded beside the thirteenth plate lay a crisp cream envelope addressed to no one at all.\n\nInside was a single line typed on an antique Olivetti ribbon:\n\n*One of you already knows how the clock stopped at 11:42.*",
+      "reactions": {
+        "fire": 15,
+        "cry": 3,
+        "mindblown": 9,
+        "laugh": 5,
+        "heart": 22
+      },
+      "comments": [
+        {
+          "id": "c-the-thirteenth-witness-1-1",
+          "user": "NightOwlReader",
+          "date": "2026-11-17",
+          "likes": 10,
+          "spoiler": false,
+          "text": "What a hook! The atmosphere in Chapter 1: Thirteen Spoons completely pulled me in. Thanks for the chapter!"
+        }
+      ]
+    }
+  ]
+}

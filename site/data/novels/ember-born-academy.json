@@ -1,0 +1,65 @@
+{
+  "slug": "ember-born-academy",
+  "title": "Ember-Born Academy",
+  "author": "Sora Lindqvist",
+  "genre": "Fantasy",
+  "tags": [
+    "Magic Academy",
+    "Dragons",
+    "Elemental Magic",
+    "Friendship",
+    "Action"
+  ],
+  "status": "Ongoing",
+  "contentRating": "Everyone",
+  "featured": false,
+  "cover": "assets/covers/ember-born-academy.svg",
+  "views": 89120,
+  "bookmarks": 8230,
+  "powerStones": 5590,
+  "rating": 4.7,
+  "subRatings": {
+    "plot": 4.7,
+    "characters": 4.8,
+    "world": 4.8,
+    "style": 4.6
+  },
+  "synopsis": "At Solis Citadel, every mage is judged by the color of their spark. Orphaned blacksmith apprentice Rowan lights the Awakening Brazier with a cold blue ash-flame that hasn't been seen since the fall of the First Dragon Riders—earning him a reluctant scholarship and a target on his back.",
+  "totalWords": 91,
+  "chapterCount": 1,
+  "updatedAt": "2026-11-20",
+  "createdAt": "2026-11-02",
+  "glossary": [],
+  "reviews": [],
+  "chapters": [
+    {
+      "id": "ember-born-academy-ch-1",
+      "number": 1,
+      "volume": "Term 1: The Awakening",
+      "title": "Chapter 1: Cold Fire",
+      "wordCount": 91,
+      "readMinutes": 1,
+      "publishedAt": "2026-11-20",
+      "authorNoteTop": "",
+      "authorNoteBottom": "",
+      "content": "Everyone knew fire was supposed to burn orange, gold, or—if you were blessed by an Arch-Duke's bloodline—blinding solar white.\n\nWhen Rowan pressed his blistered palm onto the obsidian Awakening Stone in the center of the amphitheater, the brazier did not roar. It inhaled.\n\nA hush fell over three hundred robed initiates as frost spiderwebbed across the stone basin, followed by a tall, silent spire of sapphire flame that cast silver shadows instead of dark ones. High above the marble balcony, the Grand Dean dropped his ivory staff.",
+      "reactions": {
+        "fire": 15,
+        "cry": 3,
+        "mindblown": 9,
+        "laugh": 5,
+        "heart": 22
+      },
+      "comments": [
+        {
+          "id": "c-ember-born-academy-1-1",
+          "user": "NightOwlReader",
+          "date": "2026-11-20",
+          "likes": 10,
+          "spoiler": false,
+          "text": "What a hook! The atmosphere in Chapter 1: Cold Fire completely pulled me in. Thanks for the chapter!"
+        }
+      ]
+    }
+  ]
+}

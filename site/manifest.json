@@ -1,0 +1,9 @@
+{
+  "name": "Quillspire Web Novels",
+  "short_name": "Quillspire",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#6366f1",
+  "description": "Quillspire — Complete self-hosted web novel reading and publishing platform."
+}

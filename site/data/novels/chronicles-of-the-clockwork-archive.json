@@ -1,0 +1,115 @@
+{
+  "slug": "chronicles-of-the-clockwork-archive",
+  "title": "Chronicles of the Clockwork Archive",
+  "author": "Clara Thorne",
+  "genre": "Steampunk",
+  "tags": [
+    "Steampunk",
+    "Mystery",
+    "Airships",
+    "Secret Societies",
+    "Female Lead",
+    "Alchemy"
+  ],
+  "status": "Completed",
+  "contentRating": "Everyone",
+  "featured": true,
+  "cover": "assets/covers/chronicles-of-the-clockwork-archive.svg",
+  "views": 119400,
+  "bookmarks": 9850,
+  "powerStones": 6410,
+  "rating": 4.9,
+  "subRatings": {
+    "plot": 5.0,
+    "characters": 4.9,
+    "world": 4.9,
+    "style": 4.8
+  },
+  "synopsis": "In the brass-domed metropolis of New Aethelgard, junior archivist Beatrice Quill discovers a forbidden brass cylinder containing the recorded final breath of the city's vanished founder—and a blueprint proving the Great Sky-Engine is counting down to zero.",
+  "totalWords": 293,
+  "chapterCount": 2,
+  "updatedAt": "2026-11-14",
+  "createdAt": "2026-10-18",
+  "glossary": [
+    {
+      "term": "The Great Sky-Engine",
+      "category": "Artifact",
+      "desc": "The colossal geothermal pendulum suspending New Aethelgard above the Cloud Sea."
+    }
+  ],
+  "reviews": [
+    {
+      "id": "r4",
+      "user": "BrassGoggles",
+      "rating": 5,
+      "plot": 5,
+      "characters": 5,
+      "world": 5,
+      "style": 5,
+      "date": "2026-11-18",
+      "helpful": 27,
+      "spoiler": false,
+      "text": "A completed steampunk mystery that actually sticks the landing! Beatrice is an unforgettable protagonist."
+    }
+  ],
+  "chapters": [
+    {
+      "id": "chronicles-of-the-clockwork-archive-ch-1",
+      "number": 1,
+      "volume": "Act I: The Brass Cylinder",
+      "title": "Chapter 1: Vault Seventeen",
+      "wordCount": 180,
+      "readMinutes": 1,
+      "publishedAt": "2026-11-12",
+      "authorNoteTop": "Complete novel — binge freely!",
+      "authorNoteBottom": "",
+      "content": "Every clock in the Grand Archive ticked three milliseconds out of sync with the city outside, a deliberate quirk engineered to prevent resonant vibration from shattering the glass memory-cylinders on the upper galleries.\n\nBeatrice Quill knew the rhythm of those ten thousand pendulums better than she knew her own pulse. Which was why, at half past eleven on a fog-drenched Tuesday, she immediately noticed the faint metallic *whir* coming from Vault Seventeen—a vault officially empty since the Great Fire of '74.\n\nLifting her brass oil-lantern, she turned the skeleton key. The heavy iron latch yielded with a puff of dry cedar dust. Inside, resting alone on a velvet plinth, sat a walnut phonograph no bigger than a jewelry box, its copper horn polished bright as a fresh sovereign.\n\nEngraved around the winding crank were nine words in her late grandfather's crisp draftsman's hand:\n\n*Do not play this until the barometer drops below twelve.*\n\nBeatrice glanced down at the pocket barometer clipped to her waistcoat. The brass needle was trembling violently against eleven-point-four.",
+      "reactions": {
+        "fire": 15,
+        "cry": 3,
+        "mindblown": 9,
+        "laugh": 5,
+        "heart": 22
+      },
+      "comments": [
+        {
+          "id": "c-chronicles-of-the-clockwork-archive-1-1",
+          "user": "NightOwlReader",
+          "date": "2026-11-12",
+          "likes": 10,
+          "spoiler": false,
+          "text": "What a hook! The atmosphere in Chapter 1: Vault Seventeen completely pulled me in. Thanks for the chapter!"
+        }
+      ]
+    },
+    {
+      "id": "chronicles-of-the-clockwork-archive-ch-2",
+      "number": 2,
+      "volume": "Act I: The Brass Cylinder",
+      "title": "Chapter 2: The Voice Beneath the Gears",
+      "wordCount": 113,
+      "readMinutes": 1,
+      "publishedAt": "2026-11-14",
+      "authorNoteTop": "",
+      "authorNoteBottom": "",
+      "content": "She wound the crank three careful turns and lowered the diamond stylus onto the grooved brass cylinder.\n\nFirst came a hiss like escaping steam, followed by the unmistakable low rumble of the Great Sky-Engine turning miles beneath their feet. Then a voice—calm, cultured, and terribly urgent—filled the dusty stone chamber.\n\n*\"If the needle has passed twelve, my dear Beatrice, then the Council has lied to the citizenry for forty years. The Sky-Engine is not an eternal dynamo. It is a counterweight, and someone on the Upper Spire has begun cutting the anchor cables.\"*\n\nThe lantern flame guttered violently as boots clattered down the iron spiral staircase two floors above.",
+      "reactions": {
+        "fire": 18,
+        "cry": 4,
+        "mindblown": 11,
+        "laugh": 5,
+        "heart": 26
+      },
+      "comments": [
+        {
+          "id": "c-chronicles-of-the-clockwork-archive-2-1",
+          "user": "NightOwlReader",
+          "date": "2026-11-14",
+          "likes": 11,
+          "spoiler": false,
+          "text": "What a hook! The atmosphere in Chapter 2: The Voice Beneath the Gears completely pulled me in. Thanks for the chapter!"
+        }
+      ]
+    }
+  ]
+}

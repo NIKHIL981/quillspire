@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quillspire — Web Novel Hosting & Reading Platform</title>
+  <meta name="description" content="Read, discover, and publish serialized web novels across Xianxia, LitRPG, Fantasy, Sci-Fi, Mystery, and Romance." />
+  <meta name="theme-color" content="#0b0f19" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Optional JSZip for client-side .epub / .docx parsing inside Browser Studio -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+  <!-- Reading Progress Bar (visible in reader mode) -->
+  <div id="read-progress-bar" class="progress-bar-fixed hidden" style="width: 0%"></div>
+
+  <!-- Announcement Banner -->
+  <div id="announcement-bar" class="hidden bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 text-white text-xs sm:text-sm py-2 px-4 text-center relative">
+    <span id="announcement-text"></span>
+    <button onclick="dismissAnnouncement()" class="absolute right-3 top-1/2 -translate-y-1/2 opacity-80 hover:opacity-100" title="Dismiss">&times;</button>
+  </div>
+
+  <!-- Main Sticky Navigation -->
+  <header id="main-navbar" class="surface-nav sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <!-- Brand -->
+      <a href="#home" class="flex items-center gap-2.5 shrink-0 group">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-violet-500 to-amber-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition">
+          <i data-lucide="book-open" class="w-5 h-5 text-white"></i>
+        </div>
+        <div class="leading-tight">
+          <div id="brand-name" class="font-extrabold text-lg tracking-tight">Quillspire</div>
+          <div id="brand-tagline" class="text-[10px] text-muted hidden sm:block">Web Novel Platform</div>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
+        <a href="#home" data-nav="home" class="nav-link px-3 py-2 rounded-lg hover:bg-indigo-500/10 transition flex items-center gap-1.5">
+          <i data-lucide="compass" class="w-4 h-4"></i> Discover
+        </a>
+        <a href="#browse" data-nav="browse" class="nav-link px-3 py-2 rounded-lg hover:bg-indigo-500/10 transition flex items-center gap-1.5">
+          <i data-lucide="sliders-horizontal" class="w-4 h-4"></i> Browse
+        </a>
+        <a href="#rankings" data-nav="rankings" class="nav-link px-3 py-2 rounded-lg hover:bg-indigo-500/10 transition flex items-center gap-1.5">
+          <i data-lucide="trophy" class="w-4 h-4"></i> Rankings
+        </a>
+        <a href="#library" data-nav="library" class="nav-link px-3 py-2 rounded-lg hover:bg-indigo-500/10 transition flex items-center gap-1.5">
+          <i data-lucide="bookmark" class="w-4 h-4"></i> Library
+        </a>
+        <a href="#studio" data-nav="studio" class="nav-link px-3 py-2 rounded-lg hover:bg-indigo-500/10 transition flex items-center gap-1.5 text-indigo-400">
+          <i data-lucide="feather" class="w-4 h-4"></i> Studio & Publisher
+        </a>
+      </nav>
+
+      <!-- Quick Search + Actions -->
+      <div class="flex items-center gap-2 flex-1 md:flex-initial justify-end max-w-xs">
+        <div class="relative hidden sm:block w-full max-w-[210px]">
+          <i data-lucide="search" class="w-4 h-4 text-muted absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="global-search-input" type="text" placeholder="Search novels, tags..."
+            class="w-full pl-9 pr-3 py-1.5 text-sm rounded-lg surface-card focus:outline-none focus:ring-2 focus:ring-indigo-500/60" />
+        </div>
+        <button id="ui-theme-btn" onclick="toggleUiTheme()" class="p-2 rounded-lg surface-card hover:border-indigo-500/50 transition" title="Toggle Light/Dark UI">
+          <i data-lucide="sun" class="w-4 h-4"></i>
+        </button>
+        <button onclick="openProfileModal()" class="p-2 rounded-lg surface-card hover:border-indigo-500/50 transition flex items-center gap-1.5" title="Reader Profile & Backup">
+          <i data-lucide="user-circle" class="w-4 h-4 text-indigo-400"></i>
+          <span id="nav-username" class="hidden lg:inline text-xs font-semibold">Reader</span>
+        </button>
+        <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg surface-card">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-subtle px-4 py-3 space-y-2 surface-subtle">
+      <input id="mobile-search-input" type="text" placeholder="Search titles, authors, tags..."
+        class="w-full px-3 py-2 text-sm rounded-lg surface-card focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      <div class="grid grid-cols-2 gap-2 text-sm font-medium">
+        <a href="#home" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg surface-card flex items-center gap-2"><i data-lucide="compass" class="w-4 h-4"></i> Discover</a>
+        <a href="#browse" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg surface-card flex items-center gap-2"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i> Browse</a>
+        <a href="#rankings" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg surface-card flex items-center gap-2"><i data-lucide="trophy" class="w-4 h-4"></i> Rankings</a>
+        <a href="#library" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg surface-card flex items-center gap-2"><i data-lucide="bookmark" class="w-4 h-4"></i> Library</a>
+        <a href="#studio" onclick="toggleMobileMenu()" class="col-span-2 px-3 py-2 rounded-lg bg-indigo-600 text-white flex items-center justify-center gap-2"><i data-lucide="feather" class="w-4 h-4"></i> Author Studio & Auto-Publisher</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dynamic App Container -->
+  <main id="app-root" class="min-h-[calc(100vh-140px)]"></main>
+
+  <!-- Footer -->
+  <footer id="main-footer" class="border-t border-subtle mt-16 py-10 px-4 sm:px-6 text-sm text-muted">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-base text-[var(--text-primary)]" id="footer-brand">Quillspire</span>
+        <span>&bull;</span>
+        <span>Self-Hosted Web Novel Platform</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-4 text-xs">
+        <a href="#home" class="hover:text-indigo-400">Discover</a>
+        <a href="#browse" class="hover:text-indigo-400">Advanced Search</a>
+        <a href="#rankings" class="hover:text-indigo-400">Top Charts</a>
+        <a href="#library" class="hover:text-indigo-400">My Library</a>
+        <a href="#studio" class="hover:text-indigo-400">Publisher Studio</a>
+        <button onclick="openShortcutsModal()" class="hover:text-indigo-400">Keyboard Shortcuts</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm"></div>
+
+  <!-- Generic Modal Container -->
+  <div id="modal-backdrop" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div id="modal-box" class="surface-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 relative fade-in"></div>
+  </div>
+
+  <!-- Data & Application Scripts -->
+  <script src="data/bundle.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/importer.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{
+  "siteName": "Quillspire",
+  "tagline": "Infinite Worlds, One Chapter at a Time",
+  "announcement": "Welcome to Quillspire — Now with Offline EPUB/TXT Export, Auto-Scroll, Text-to-Speech, and 1-Click Publisher Sync!",
+  "accentColor": "#6366f1",
+  "adminPin": "1234",
+  "collections": [
+    {
+      "id": "col-cultivation",
+      "title": "Path to Immortality",
+      "subtitle": "Epic cultivation, alchemy & realm progression",
+      "genres": [
+        "Xianxia",
+        "LitRPG"
+      ]
+    },
+    {
+      "id": "col-cozy",
+      "title": "Cozy & Heartwarming",
+      "subtitle": "Low-stress escapes, found family & warm tea",
+      "genres": [
+        "Slice of Life",
+        "Romance"
+      ]
+    },
+    {
+      "id": "col-brainy",
+      "title": "Clever Plots & Twists",
+      "subtitle": "Mysteries, steampunk intrigue & cyberpunk noir",
+      "genres": [
+        "Mystery",
+        "Steampunk",
+        "Sci-Fi"
+      ]
+    }
+  ]
+}

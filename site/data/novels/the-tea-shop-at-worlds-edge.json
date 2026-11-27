@@ -1,0 +1,86 @@
+{
+  "slug": "the-tea-shop-at-worlds-edge",
+  "title": "The Tea Shop at World's Edge",
+  "author": "Hana Miyazaki",
+  "genre": "Slice of Life",
+  "tags": [
+    "Cozy Fantasy",
+    "Cooking",
+    "Found Family",
+    "Healing",
+    "Magic",
+    "No Stress"
+  ],
+  "status": "Ongoing",
+  "contentRating": "Everyone",
+  "featured": true,
+  "cover": "assets/covers/the-tea-shop-at-worlds-edge.svg",
+  "views": 131800,
+  "bookmarks": 13500,
+  "powerStones": 8910,
+  "rating": 4.9,
+  "subRatings": {
+    "plot": 4.7,
+    "characters": 5.0,
+    "world": 4.9,
+    "style": 5.0
+  },
+  "synopsis": "After retiring early from the Royal Vanguard with a tired sword arm and a tiny pension, Mira opens a wooden teahouse on the quiet mist-shrouded cliff where the mortal kingdom meets the Fae Wilds. Dragons, cursed knights, and lost spirits all have one rule inside her door: leave your weapons on the porch and finish your scones.",
+  "totalWords": 169,
+  "chapterCount": 1,
+  "updatedAt": "2026-11-25",
+  "createdAt": "2026-10-24",
+  "glossary": [
+    {
+      "term": "Starlight Oolong",
+      "category": "Brew",
+      "desc": "Harvested only under crescent moons; soothes battle-fatigue and mends minor magical burns."
+    }
+  ],
+  "reviews": [
+    {
+      "id": "r5",
+      "user": "WarmBlanketReader",
+      "rating": 5,
+      "plot": 5,
+      "characters": 5,
+      "world": 5,
+      "style": 5,
+      "date": "2026-11-25",
+      "helpful": 54,
+      "spoiler": false,
+      "text": "Pure serotonin in chapter form. Read this with an actual cup of tea."
+    }
+  ],
+  "chapters": [
+    {
+      "id": "the-tea-shop-at-worlds-edge-ch-1",
+      "number": 1,
+      "volume": "Season 1: Autumn Mists",
+      "title": "Chapter 1: No Swords Past the Welcome Mat",
+      "wordCount": 169,
+      "readMinutes": 1,
+      "publishedAt": "2026-11-25",
+      "authorNoteTop": "Brew yourself a mug before reading!",
+      "authorNoteBottom": "",
+      "content": "The brass bell above the cedar door jingled, admitting a gust of pine-scented mountain fog and a seven-foot-tall knight whose obsidian armor was still mildly on fire.\n\nMira did not flinch. She simply poured boiling spring water in a slow, concentric spiral over freshly bruised jasmine buds, letting the sweet floral steam rise to meet the scent of brimstone.\n\n\"Porch rack,\" she called pleasantly over her shoulder. \"Both the greatsword and the flaming pauldrons. I just waxed those floorboards yesterday.\"\n\nThe Dread Knight of the Ashen Wastes hesitated—something few armies had ever witnessed him do—before sheepishly unbuckling a rune-etched blade that had felled three mountain wyrms and leaning it carefully beside a yellow umbrella.\n\n\"Do you,\" his voice rumbled like grinding basalt from inside the helm, \"still have the honey-glazed chestnut tarts?\"\n\n\"Fresh out of the oven ten minutes ago,\" Mira smiled, sliding a ceramic plate onto the sunlit window table. \"Sit down, Barnaby. You look like you've had a week.\" ",
+      "reactions": {
+        "fire": 15,
+        "cry": 3,
+        "mindblown": 9,
+        "laugh": 5,
+        "heart": 22
+      },
+      "comments": [
+        {
+          "id": "c-the-tea-shop-at-worlds-edge-1-1",
+          "user": "NightOwlReader",
+          "date": "2026-11-25",
+          "likes": 10,
+          "spoiler": false,
+          "text": "What a hook! The atmosphere in Chapter 1: No Swords Past the Welcome Mat completely pulled me in. Thanks for the chapter!"
+        }
+      ]
+    }
+  ]
+}

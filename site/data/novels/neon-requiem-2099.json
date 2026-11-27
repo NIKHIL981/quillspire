@@ -1,0 +1,72 @@
+{
+  "slug": "neon-requiem-2099",
+  "title": "Neon Requiem 2099",
+  "author": "Kaito Sato",
+  "genre": "Sci-Fi",
+  "tags": [
+    "Cyberpunk",
+    "AI",
+    "Noir",
+    "Dystopia",
+    "Action",
+    "Hacking"
+  ],
+  "status": "Ongoing",
+  "contentRating": "Mature",
+  "featured": false,
+  "cover": "assets/covers/neon-requiem-2099.svg",
+  "views": 96320,
+  "bookmarks": 7410,
+  "powerStones": 5120,
+  "rating": 4.7,
+  "subRatings": {
+    "plot": 4.8,
+    "characters": 4.7,
+    "world": 4.9,
+    "style": 4.6
+  },
+  "synopsis": "Memory-broker Ren Takahashi deals in stolen dreams beneath the perpetual acid rain of Neo-Osaka. When a corporate courier drops dead in his noodle stall carrying an unencrypted sentient AI core—one that insists it remembers Ren's own deleted past—every syndicate in the orbital stack puts a bounty on his head.",
+  "totalWords": 160,
+  "chapterCount": 1,
+  "updatedAt": "2026-11-21",
+  "createdAt": "2026-10-21",
+  "glossary": [
+    {
+      "term": "Mnemo-Shard",
+      "category": "Tech",
+      "desc": "Crystalline neural tape capable of storing up to six hours of raw human sensory memory."
+    }
+  ],
+  "reviews": [],
+  "chapters": [
+    {
+      "id": "neon-requiem-2099-ch-1",
+      "number": 1,
+      "volume": "Book 1: Ghost in the Static",
+      "title": "Chapter 1: Rain tastes like copper",
+      "wordCount": 160,
+      "readMinutes": 1,
+      "publishedAt": "2026-11-21",
+      "authorNoteTop": "",
+      "authorNoteBottom": "",
+      "content": "In Lower Ward 4, the holographic koi fish swam straight through the tenement walls because nobody could afford the firewall firmware to keep the corporate billboards out of their kitchens.\n\nRen wiped condensation off his diagnostic monocle and slid a steaming bowl of synthetic miso across the steel counter. Across from him sat a courier whose chrome collarbone was leaking dark coolant onto the plastic stool.\n\n\"You're Takahashi,\" the courier rasped, slamming a thumb-sized obsidian shard beside his chopsticks. \"Don't scan it on the grid. Don't sell it to Arasawa. Just... ask it what happened on Pier 12.\"\n\nBefore Ren could reach for his scanner, the courier's optics flickered cold amber and went dark. Simultaneously, every neon sign along the flooded alleyway blinked off for half a second—and in Ren's peripheral HUD, a polite cyan text box appeared where no network connection existed.\n\n`> Hello, Ren. You promised we wouldn't forget this time.`",
+      "reactions": {
+        "fire": 15,
+        "cry": 3,
+        "mindblown": 9,
+        "laugh": 5,
+        "heart": 22
+      },
+      "comments": [
+        {
+          "id": "c-neon-requiem-2099-1-1",
+          "user": "NightOwlReader",
+          "date": "2026-11-21",
+          "likes": 10,
+          "spoiler": false,
+          "text": "What a hook! The atmosphere in Chapter 1: Rain tastes like copper completely pulled me in. Thanks for the chapter!"
+        }
+      ]
+    }
+  ]
+}
