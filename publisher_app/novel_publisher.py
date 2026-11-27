@@ -639,12 +639,40 @@ def rebuild_site_index(base_url="https://chaya.futureagentlab.com"):
         slug_dir.mkdir(parents=True, exist_ok=True)
         (slug_dir / "index.html").write_text(stub_html, encoding="utf-8")
 
+        # Generate static SEO stubs only up to Chapter 5 per novel
+        max_seo_ch = min(5, int(s.get("chapterCount", 0) or 0))
+        for ch_num in range(1, max_seo_ch + 1):
+            ch_url = f"{prefix}/novels/{urllib.parse.quote(slug)}/chapter-{ch_num}/"
+            ch_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title_esc} \u2014 Chapter {ch_num} | Quillspire</title>
+  <meta name="description" content="Read {title_esc} Chapter {ch_num} by {author_esc} free online on Quillspire." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="{ch_url}" />
+  <meta http-equiv="refresh" content="0; url={prefix}/#read/{urllib.parse.quote(slug)}/{ch_num}" />
+</head>
+<body style="background:#0b0f19;color:#e2e8f0;font-family:sans-serif;text-align:center;padding:48px">
+  <h1>{title_esc} \u2014 Chapter {ch_num}</h1>
+  <p><a href="{prefix}/#read/{urllib.parse.quote(slug)}/{ch_num}" style="color:#818cf8">Read Chapter {ch_num} on Quillspire</a></p>
+</body>
+</html>
+"""
+            ch_dir = slug_dir / f"chapter-{ch_num}"
+            ch_dir.mkdir(parents=True, exist_ok=True)
+            (ch_dir / "index.html").write_text(ch_html, encoding="utf-8")
+
     urls = [
         f"  <url><loc>{prefix}/</loc><lastmod>{today_str}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>",
     ]
     for s in summaries:
         qslug = urllib.parse.quote(s["slug"])
         urls.append(f"  <url><loc>{prefix}/novels/{qslug}/</loc><lastmod>{s['updatedAt']}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>")
+        max_seo_ch = min(5, int(s.get("chapterCount", 0) or 0))
+        for ch_num in range(1, max_seo_ch + 1):
+            urls.append(f"  <url><loc>{prefix}/novels/{qslug}/chapter-{ch_num}/</loc><lastmod>{s['updatedAt']}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>")
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
     (SITE_DIR / "sitemap.xml").write_text(sitemap, encoding="utf-8")
     return len(summaries)
