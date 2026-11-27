@@ -741,7 +741,22 @@ def launch_gui():
     btn_bar = tk.Frame(t1, bg="#111827")
     btn_bar.grid(row=8, column=0, columnspan=3, sticky="ew", pady=6)
     tk.Button(btn_bar, text="Add Novel to Website", command=do_add, bg="#4f46e5", fg="white", font=("Segoe UI", 10, "bold"), relief="flat", padx=16, pady=7).pack(side="left", padx=(0, 8))
+    def do_auto_fetch_online():
+        log("Starting online auto-fetch (3 novels from Gutenberg & Open Library)...")
+        def _worker():
+            cmd = [sys.executable, str(SCRIPT_DIR / "auto_fetch_novels.py"), "--source", "both", "--mode", "mixed", "--limit", "3"]
+            if deploy_var.get():
+                cmd.append("--deploy")
+            r = subprocess.run(cmd, cwd=str(PROJECT_ROOT), capture_output=True, text=True)
+            out = (r.stdout or "") + (r.stderr or "")
+            for line in out.strip().splitlines()[-12:]:
+                win.after(0, log, line)
+            win.after(0, refresh_catalog_list)
+            win.after(0, lambda: messagebox.showinfo("Auto-Fetch Complete", "Finished fetching novels! Check the log window for details."))
+        threading.Thread(target=_worker, daemon=True).start()
+
     tk.Button(btn_bar, text="Batch Import incoming_novels/", command=do_scan_batch, bg="#059669", fg="white", font=("Segoe UI", 10, "bold"), relief="flat", padx=14, pady=7).pack(side="left", padx=4)
+    tk.Button(btn_bar, text="Auto-Fetch Online (Gutenberg/OL)", command=do_auto_fetch_online, bg="#7c3aed", fg="white", font=("Segoe UI", 10, "bold"), relief="flat", padx=14, pady=7).pack(side="left", padx=4)
     tk.Button(btn_bar, text="Preview Website", command=lambda: threading.Thread(target=start_preview_server, args=(8080, True), daemon=True).start(), bg="#0284c7", fg="white", font=("Segoe UI", 10, "bold"), relief="flat", padx=14, pady=7).pack(side="right")
 
     t2 = tk.Frame(nb, bg="#111827", padx=16, pady=14)

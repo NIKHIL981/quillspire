@@ -2,24 +2,30 @@
 COPY-PASTE THIS PROMPT INTO ANTIGRAVITY (ONE-TIME SETUP & DEPLOYMENT)
 ========================================================================
 
-You are my DevOps and Full-Stack Deployment Agent. I have a complete web novel hosting platform in this workspace inside the `site/` folder (with an accompanying offline auto-publisher in `publisher_app/`).
+You are my DevOps and Full-Stack Deployment Agent. I have the complete InkRealm 2.0 web novel hosting platform in this workspace:
+- `site/` — Full static web novel website
+- `publisher_app/novel_publisher.py` — Offline GUI/CLI publisher for my own novels
+- `publisher_app/auto_fetch_novels.py` — Automated public-domain novel fetcher (Project Gutenberg via Gutendex + Open Library / Internet Archive)
+- `.github/workflows/auto-fetch-novels.yml` — Scheduled daily GitHub Action that auto-fetches new novels and commits them automatically
 
-Please complete the following steps end-to-end:
+Please complete these steps end-to-end (one-time setup so I never need Antigravity again afterward):
 
-1. PICK A UNIQUE, MEMORABLE BRAND & SUBDOMAIN NAME:
-   - Inspect my existing connected domains/hosting accounts (Cloudflare Pages, Vercel, Netlify, GitHub Pages, or Firebase Hosting — whichever is already authenticated or available in my environment).
-   - Propose and configure a clean, unique, brandable subdomain name for this web novel platform (for example: `quillspire.<mydomain>`, `vellumverse.<mydomain>`, `loreloom.<mydomain>`, or `inkrealm.<mydomain>` — or a unique `*.pages.dev` / `*.vercel.app` / `*.netlify.app` subdomain if no custom root domain is connected).
-   - Update `site/config.json` (`siteName`, `tagline`) and `site/manifest.json` so the website branding matches the chosen unique name cleanly, then run `python publisher_app/novel_publisher.py --rebuild` so `site/data/bundle.js` and `site/sitemap.xml` stay 100% synced.
+1. CREATE A UNIQUE SUBDOMAIN & BRANDING:
+   - Check my connected hosting/DNS accounts (Cloudflare Pages, Vercel, Netlify, GitHub Pages, or Firebase Hosting — whichever is authenticated or easiest for automatic Git CI/CD).
+   - Pick a unique, memorable, brandable subdomain name for this web novel platform (for example: `quillspire.<mydomain>`, `vellumverse.<mydomain>`, `loreloom.<mydomain>`, or a clean unique `*.pages.dev` / `*.vercel.app` / `*.netlify.app` subdomain if no custom root domain is connected).
+   - Update `site/config.json` (`siteName`, `tagline`) and `site/manifest.json` to match the chosen name, then run `python publisher_app/novel_publisher.py --rebuild` so `site/data/catalog.json`, `site/data/bundle.js`, and `site/sitemap.xml` are 100% synced.
 
-2. INITIALIZE GIT & AUTOMATIC CI/CD DEPLOYMENT (SO I NEVER NEED ANTIGRAVITY AGAIN TO ADD NOVELS):
-   - Initialize a Git repository in the project root (if not already initialized) and push it to a new GitHub repository under my account.
-   - Connect that GitHub repository directly to the hosting provider (Cloudflare Pages / Vercel / Netlify / GitHub Pages) with the publish/root directory set to `site` and NO build command required (pure static instant deploy).
-   - Configure the new subdomain DNS record (CNAME) automatically if my domain DNS is accessible, with HTTPS/SSL enforced.
+2. TEST THE AUTO-FETCHER ONCE & PUSH TO GITHUB:
+   - Run one live test of `python publisher_app/auto_fetch_novels.py --source both --mode mixed --limit 4` to verify Project Gutenberg and Open Library books download, split cleanly into chapters, strip boilerplate, save covers, and update `publisher_app/fetched_registry.json`, `site/data/catalog.json`, and `site/data/bundle.js`.
+   - Initialize Git in this workspace root (if not already initialized), commit everything, and push to a new GitHub repository under my account.
+   - Connect that GitHub repo to the hosting provider with publish directory set to `site` and NO build step required (instant static redeploy on every Git push).
+   - Bind the new subdomain with HTTPS/SSL enforced.
 
-3. VERIFY ZERO-ANTIGRAVITY PUBLISHING PIPELINE:
-   - Verify the live subdomain loads cleanly (`index.html`, `config.json`, `data/catalog.json`, `data/novels/*.json`, and `assets/covers/*.svg` all return HTTP 200).
-   - Test that `git push` from this folder automatically triggers a live redeploy in under 30 seconds.
-   - Print a concise handoff summary containing:
-     a) My new live subdomain URL
-     b) The GitHub repository URL & branch name (so I can optionally paste it into the website's built-in Studio -> "1-Click Live GitHub Sync")
-     c) Confirmation that double-clicking `AUTO_IMPORT_AND_DEPLOY.bat` (or running `python publisher_app/novel_publisher.py --scan --deploy`) will publish any new novels I drop into `incoming_novels/` live automatically without opening Antigravity again.
+3. ENABLE AUTOMATED DAILY NOVEL FETCHING (ZERO ANTIGRAVITY AFTERWARD):
+   - Confirm GitHub Actions workflow `.github/workflows/auto-fetch-novels.yml` is enabled with `contents: write` permission so it runs automatically every day at 04:00 UTC and supports manual "Run workflow" triggers from GitHub.
+   - Verify the live subdomain loads cleanly (`index.html`, `config.json`, `data/catalog.json`, `data/novels/*.json`, and `assets/covers/*` all return HTTP 200).
+   - Print a concise handoff summary with:
+     a) My live subdomain URL
+     b) My GitHub repo URL & branch name (also usable in the site's Studio -> 1-Click Live GitHub Sync)
+     c) The list of novels added during the test run
+     d) Confirmation that both daily GitHub Actions auto-fetching and my local `AUTO_FETCH_NOW.bat` / `AUTO_IMPORT_AND_DEPLOY.bat` scripts work automatically without opening Antigravity again.

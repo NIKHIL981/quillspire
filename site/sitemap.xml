@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>/#novel/anne-of-green-gables</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
+  <url><loc>/#novel/confessions-of-zeno</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
+  <url><loc>/#novel/the-duke-of-york-s-steps</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
+  <url><loc>/#novel/the-paladin-chronicles</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-tea-shop-at-worlds-edge</loc><lastmod>2026-11-25</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/jade-sovereign-of-the-shattered-heavens</loc><lastmod>2026-11-24</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/architect-of-the-infinite-dungeon</loc><lastmod>2026-11-23</lastmod><priority>0.8</priority></url>

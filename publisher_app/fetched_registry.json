@@ -1,0 +1,54 @@
+{
+  "version": "1.0",
+  "updatedAt": "2026-11-27T13:13:33Z",
+  "source_ids": [
+    "standardebooks:beryl-de-zoete",
+    "manybooks:401025",
+    "openlibrary:/works/OL77746W",
+    "standardebooks:the-duke-of-yorks-steps"
+  ],
+  "slugs": [
+    "confessions-of-zeno",
+    "the-paladin-chronicles",
+    "anne-of-green-gables",
+    "the-duke-of-york-s-steps"
+  ],
+  "history": [
+    {
+      "sourceId": "standardebooks:beryl-de-zoete",
+      "slug": "confessions-of-zeno",
+      "title": "Confessions of Zeno",
+      "source": "Standard Ebooks",
+      "chapters": 10,
+      "words": 168528,
+      "importedAt": "2026-11-27T13:12:04Z"
+    },
+    {
+      "sourceId": "manybooks:401025",
+      "slug": "the-paladin-chronicles",
+      "title": "The Paladin Chronicles",
+      "source": "ManyBooks",
+      "chapters": 134,
+      "words": 648208,
+      "importedAt": "2026-11-27T13:12:13Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL77746W",
+      "slug": "anne-of-green-gables",
+      "title": "Anne of Green Gables",
+      "source": "Open Library",
+      "chapters": 411,
+      "words": 112126,
+      "importedAt": "2026-11-27T13:12:45Z"
+    },
+    {
+      "sourceId": "standardebooks:the-duke-of-yorks-steps",
+      "slug": "the-duke-of-york-s-steps",
+      "title": "The Duke of York’s Steps",
+      "source": "Standard Ebooks",
+      "chapters": 28,
+      "words": 83518,
+      "importedAt": "2026-11-27T13:13:33Z"
+    }
+  ]
+}

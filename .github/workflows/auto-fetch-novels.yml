@@ -1,0 +1,92 @@
+name: Auto-Fetch Public-Domain Novels
+
+on:
+  schedule:
+    # Runs automatically every day at 04:00 UTC
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Novel source (all, both, gutenberg, standardebooks, manybooks, openlibrary, feedbooks)'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - both
+          - gutenberg
+          - standardebooks
+          - manybooks
+          - openlibrary
+          - feedbooks
+      mode:
+        description: 'Selection mode (mixed, best, newest)'
+        required: false
+        default: 'mixed'
+        type: choice
+        options:
+          - mixed
+          - best
+          - newest
+      limit:
+        description: 'Number of new novels to add'
+        required: false
+        default: '3'
+        type: string
+      topic:
+        description: 'Optional genre/topic filter (leave blank to rotate automatically)'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  fetch-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch new novels from public-domain libraries
+        env:
+          INPUT_SOURCE: ${{ inputs.source || 'all' }}
+          INPUT_MODE: ${{ inputs.mode || 'mixed' }}
+          INPUT_LIMIT: ${{ inputs.limit || '3' }}
+          INPUT_TOPIC: ${{ inputs.topic || '' }}
+        run: |
+          if [ -n "$INPUT_TOPIC" ]; then
+            python publisher_app/auto_fetch_novels.py --source "$INPUT_SOURCE" --mode "$INPUT_MODE" --limit "$INPUT_LIMIT" --topic "$INPUT_TOPIC"
+          else
+            python publisher_app/auto_fetch_novels.py --source "$INPUT_SOURCE" --mode "$INPUT_MODE" --limit "$INPUT_LIMIT"
+          fi
+
+      - name: Verify generated site data & catalog integrity
+        run: |
+          python -c "import json; d=json.load(open('site/data/catalog.json', encoding='utf-8')); print('Catalog valid:', d['totalNovels'], 'novels')"
+          test -s site/data/bundle.js
+          test -s site/sitemap.xml
+
+      - name: Commit, push, and trigger live Hostinger + Pages deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "Quillspire Auto-Bot"
+          git config user.email "quillspire-bot@users.noreply.github.com"
+          git add site/data site/assets/covers site/sitemap.xml publisher_app/fetched_registry.json
+          if git diff --cached --quiet; then
+            echo "No new novels to commit today."
+          else
+            git commit -m "Auto-add public-domain novels"
+            git push
+            gh workflow run deploy.yml --ref main
+          fi
