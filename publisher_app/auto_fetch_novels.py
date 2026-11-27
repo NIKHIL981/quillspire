@@ -40,7 +40,7 @@ import novel_publisher as npub
 
 REGISTRY_PATH = SCRIPT_DIR / "fetched_registry.json"
 USER_AGENT = "InkRealmNovelBot/2.0 (https://github.com/inkrealm; contact@inkrealm.local)"
-REQUEST_DELAY_SEC = 1.6  # Polite delay for Open Library & Archive.org rate limits
+REQUEST_DELAY_SEC = 0.5  # Polite delay between requests (1.5s enforced for Open Library)
 
 FICTION_TOPICS = [
     "fantasy",
@@ -66,8 +66,10 @@ OPENLIBRARY_SUBJECTS = [
     "ghost_stories",
 ]
 
-# Subject keyword -> InkRealm genre mapping (ordered by specificity)
+# Subject keyword -> InkRealm/Quillspire genre mapping (ordered by specificity)
 GENRE_RULES = [
+    ("Xianxia", ["xianxia", "wuxia", "cultivation", "martial arts", "immortal", "dao", "qi "]),
+    ("LitRPG", ["litrpg", "gamelit", "dungeon", "system", "level up", "virtual reality", "mmorpg"]),
     ("Steampunk", ["steampunk", "clockwork", "airship", "verne", "scientific romance"]),
     ("Sci-Fi", ["science fiction", "sci-fi", "space", "mars", "martian", "future", "dystopia", "time travel", "alien", "utopia", "cyber"]),
     ("Horror", ["horror", "ghost", "vampire", "gothic", "supernatural", "occult", "haunted", "macabre", "cthulhu", "werewolf"]),
@@ -77,6 +79,28 @@ GENRE_RULES = [
     ("Slice of Life", ["domestic", "coming of age", "country life", "pastoral", "humor", "comedy", "satire", "manners"]),
     ("Fantasy", ["fantasy", "magic", "fairy", "dragon", "myth", "legend", "wizard", "sword", "kingdom", "enchant", "adventure", "lost world"]),
 ]
+
+NON_FICTION_NOISE = (
+    "dictionary", "encyclopedia", "grammar", "textbook", "sermon", "theology",
+    "treatise", "census", "almanac", "bibliography", "catalog", "statutes",
+    "parliamentary", "cookery", "cooking", "recipes", "manual of", "handbook",
+)
+
+
+def is_fiction_novel(title: str, subjects: list) -> bool:
+    """Ensure imported books are novels/fiction/stories rather than reference/non-fiction."""
+    low_t = (title or "").lower()
+    if any(n in low_t for n in NON_FICTION_NOISE):
+        return False
+    blob = " | ".join(subjects or []).lower()
+    if not blob:
+        return True
+    fiction_hints = (
+        "fiction", "novel", "story", "stories", "tales", "fantasy", "sci-fi",
+        "science fiction", "mystery", "romance", "horror", "adventure", "thriller",
+        "detective", "ghost", "gothic", "espionage", "steampunk", "young adult",
+    )
+    return any(h in blob for h in fiction_hints)
 
 GUTENBERG_START_RE = re.compile(
     r"\*{3}\s*START OF (?:THE|THIS) PROJECT GUTENBERG EBOOK[^\n]*\*{3}",
@@ -345,7 +369,10 @@ def finalize_and_validate_novel(
     """Parses the downloaded file, enforces quality gates, and writes via novel_publisher."""
     ext = source_file.suffix.lower()
     if ext == ".epub":
-        emeta, raw_chapters = npub.parse_epub(source_file)
+        try:
+            emeta, raw_chapters = npub.parse_epub(source_file)
+        except Exception as e:
+            return None, f"Skipped (corrupted EPUB: {e})"
         if not meta_overrides.get("synopsis") and emeta.get("synopsis"):
             meta_overrides["synopsis"] = emeta["synopsis"]
     else:
@@ -446,7 +473,6 @@ def fetch_from_gutenberg(reg, limit, mode="mixed", topic="", min_chapters=2, min
     if limit <= 0:
         return added
 
-    sorts = []
     if mode == "best":
         sorts = [("popular", limit)]
     elif mode == "newest":
@@ -456,28 +482,23 @@ def fetch_from_gutenberg(reg, limit, mode="mixed", topic="", min_chapters=2, min
         best_target = limit - newest_target
         sorts = [("descending", newest_target), ("popular", best_target)]
 
-    topics_pool = [topic] if topic else random.sample(FICTION_TOPICS, k=min(4, len(FICTION_TOPICS)))
-
     for sort_key, target_count in sorts:
         if target_count <= 0:
             continue
         got_for_sort = 0
-        for top in topics_pool:
-            if got_for_sort >= target_count or len(added) >= limit:
-                break
-            params = {
-                "languages": "en",
-                "copyright": "false",
-                "sort": sort_key,
-                "topic": top,
-            }
-            url = "https://gutendex.com/books?" + urllib.parse.urlencode(params)
-            print(f"[GUTENBERG] Querying sort={sort_key}, topic='{top}'...")
+        # Query without slow server-side topic filter; paginate up to 5 pages and filter fiction locally
+        params = {"languages": "en", "copyright": "false", "sort": sort_key}
+        next_url = "https://gutendex.com/books?" + urllib.parse.urlencode(params)
+        page_num = 0
+        while next_url and page_num < 5 and got_for_sort < target_count and len(added) < limit:
+            page_num += 1
+            print(f"[GUTENBERG] Querying sort={sort_key}, page={page_num}...")
             try:
-                data = http_get_json(url, timeout=18, retries=1)
+                data = http_get_json(next_url, timeout=18, retries=1)
             except Exception as e:
                 print(f"[GUTENBERG WARN] API request failed: {e}")
                 break
+            next_url = data.get("next")
 
             for book in data.get("results", []):
                 if got_for_sort >= target_count or len(added) >= limit:
@@ -485,6 +506,11 @@ def fetch_from_gutenberg(reg, limit, mode="mixed", topic="", min_chapters=2, min
                 gid = book.get("id")
                 title = (book.get("title") or "").split("\n")[0].strip()
                 if not gid or not title or len(title) > 120:
+                    continue
+                subjects = (book.get("subjects") or []) + (book.get("bookshelves") or [])
+                if not is_fiction_novel(title, subjects):
+                    continue
+                if topic and not any(topic.lower() in s.lower() for s in subjects):
                     continue
                 source_id = f"gutenberg:{gid}"
                 if is_already_imported(reg, source_id, title):
@@ -497,8 +523,7 @@ def fetch_from_gutenberg(reg, limit, mode="mixed", topic="", min_chapters=2, min
 
                 authors = book.get("authors") or []
                 author = normalize_author_name(authors[0].get("name") if authors else "Unknown Author")
-                subjects = (book.get("subjects") or []) + (book.get("bookshelves") or [])
-                genre = map_genre(subjects, default=map_genre([top], default="Fantasy"))
+                genre = map_genre(subjects, default=map_genre([topic], default="Fantasy") if topic else "Fantasy")
                 tags = extract_clean_tags(subjects, genre)
                 summaries = book.get("summaries") or []
                 synopsis = npub.clean_text(summaries[0])[:550] if summaries else ""
@@ -791,126 +816,150 @@ def fetch_from_manybooks(reg, limit, mode="mixed", topic="", min_chapters=2, min
     if limit <= 0:
         return added
 
-    feed_url = "https://manybooks.net/opds/new_titles"
-    if topic:
-        try:
-            groot = _parse_atom_feed("https://manybooks.net/opds/genres")
-            for ge in groot.findall("a:entry", ATOM_NS):
-                gtitle = (ge.findtext("a:title", "", ATOM_NS) or "").lower()
-                if topic.lower() in gtitle:
-                    gl = ge.find("a:link", ATOM_NS)
-                    if gl is not None and gl.attrib.get("href"):
-                        feed_url = gl.attrib["href"]
-                        break
-        except Exception:
-            pass
-
-    print(f"[MANYBOOKS] Querying {feed_url}...")
+    # Collect target OPDS feeds: new_titles + webnovel-style genre feeds
+    feed_urls = []
+    if not topic:
+        feed_urls.append("https://manybooks.net/opds/new_titles")
     try:
-        root = _parse_atom_feed(feed_url)
-    except Exception as e:
-        print(f"[MANYBOOKS WARN] Feed failed: {e}")
-        return added
+        groot = _parse_atom_feed("https://manybooks.net/opds/genres")
+        wanted_genres = (
+            [topic.lower()] if topic
+            else ["fantasy", "science fiction", "sci-fi", "mystery", "romance", "horror", "thriller", "adventure", "espionage", "ghost", "gothic", "action", "young adult"]
+        )
+        for ge in groot.findall("a:entry", ATOM_NS):
+            gl = ge.find("a:link", ATOM_NS)
+            if gl is None:
+                continue
+            gtitle = (gl.attrib.get("title") or ge.findtext("a:title", "", ATOM_NS) or "").strip().lower()
+            href = gl.attrib.get("href", "")
+            if href and any(w in gtitle for w in wanted_genres):
+                feed_urls.append(href)
+    except Exception:
+        pass
+    if not feed_urls:
+        feed_urls = ["https://manybooks.net/opds/new_titles"]
 
-    entries = root.findall("a:entry", ATOM_NS)
-    if mode == "best":
-        random.shuffle(entries)
-
-    for entry in entries:
+    for base_feed in feed_urls:
         if len(added) >= limit:
             break
-        detail_url = None
-        thumb_url = None
-        for link in entry.findall("a:link", ATOM_NS):
-            href = link.attrib.get("href", "")
-            rel = link.attrib.get("rel", "")
-            if "title_detail" in href:
-                detail_url = href
-            elif "thumbnail" in rel or "cover" in rel:
-                thumb_url = href
-        if not detail_url:
-            continue
-
-        book_num = detail_url.rstrip("/").split("/")[-1]
-        source_id = f"manybooks:{book_num}"
-        if source_id in reg["source_ids"]:
-            continue
-
-        try:
-            droot = _parse_atom_feed(detail_url)
-        except Exception as e:
-            print(f"[MANYBOOKS SKIP] Detail fetch failed ({detail_url}): {e}")
-            continue
-
-        dentry = droot.find("a:entry", ATOM_NS)
-        if dentry is None:
-            continue
-        title = (dentry.findtext("a:title", "", ATOM_NS) or droot.findtext("a:title", "", ATOM_NS) or "").strip()
-        if not title or len(title) > 120 or is_already_imported(reg, source_id, title):
-            continue
-
-        epub_url = None
-        cover_url = thumb_url
-        for link in dentry.findall("a:link", ATOM_NS):
-            rel = link.attrib.get("rel", "")
-            ltype = link.attrib.get("type", "")
-            href = link.attrib.get("href", "")
-            if ltype == "application/epub+zip" and "acquisition" in rel:
-                epub_url = href
-            elif ("cover" in rel or "thumbnail" in rel) and "image/" in ltype:
-                cover_url = href
-        if not epub_url:
-            continue
-
-        author = normalize_author_name(dentry.findtext("a:author/a:name", "Unknown Author", ATOM_NS))
-        categories = [c.attrib.get("term", "") for c in dentry.findall("a:category", ATOM_NS) if c.attrib.get("term")]
-        if topic:
-            categories.append(topic)
-        genre = map_genre(categories, default=map_genre([topic], default="Fantasy") if topic else "Fantasy")
-        tags = extract_clean_tags(categories, genre)
-        content_el = dentry.find("a:content", ATOM_NS)
-        raw_desc = "".join(content_el.itertext()) if content_el is not None else ""
-        synopsis = npub.clean_text(raw_desc)[:550]
-
-        with tempfile.TemporaryDirectory() as tmp_str:
-            tmp = Path(tmp_str)
-            book_path = tmp / f"mb_{book_num}.epub"
+        next_url = base_feed
+        page_num = 0
+        while next_url and page_num < 3 and len(added) < limit:
+            page_num += 1
+            print(f"[MANYBOOKS] Querying {next_url}...")
             try:
-                raw_bytes, _ = http_get_bytes(epub_url, timeout=45)
-                book_path.write_bytes(raw_bytes)
+                root = _parse_atom_feed(next_url)
             except Exception as e:
-                print(f"[MANYBOOKS SKIP] Download failed for '{title}': {e}")
-                continue
+                print(f"[MANYBOOKS WARN] Feed failed: {e}")
+                break
 
-            cover_path = download_cover_to_temp(cover_url, tmp, npub.slugify(title))
-            novel_obj, status_msg = finalize_and_validate_novel(
-                source_file=book_path,
-                meta_overrides={
-                    "title": title,
-                    "author": author,
-                    "genre": genre,
-                    "tags": tags,
-                    "synopsis": synopsis,
-                    "cover_file": cover_path,
-                },
-                source_meta={
-                    "source": "ManyBooks",
-                    "sourceId": source_id,
-                    "sourceUrl": f"https://manybooks.net/titles/{book_num}",
-                    "views_seed": random.randint(350, 9500),
-                    "rating_seed": 4.6,
-                },
-                min_chapters=min_chapters,
-                min_words=min_words,
-                dry_run=dry_run,
-            )
-            if novel_obj:
-                print(f"[MANYBOOKS {status_msg}] '{novel_obj['title']}' ({novel_obj['chapterCount']} ch, {novel_obj['totalWords']} words, {genre})")
-                if not dry_run:
-                    record_imported(reg, source_id, novel_obj["slug"], novel_obj["title"], "ManyBooks", novel_obj["chapterCount"], novel_obj["totalWords"])
-                added.append(novel_obj)
-            else:
-                print(f"[MANYBOOKS SKIP] '{title}': {status_msg}")
+            next_url = None
+            for l in root.findall("a:link", ATOM_NS):
+                if l.attrib.get("rel") == "next" and l.attrib.get("href"):
+                    next_url = l.attrib["href"]
+                    break
+
+            entries = root.findall("a:entry", ATOM_NS)
+            if mode == "best":
+                random.shuffle(entries)
+
+            for entry in entries:
+                if len(added) >= limit:
+                    break
+                detail_url = None
+                thumb_url = None
+                for link in entry.findall("a:link", ATOM_NS):
+                    href = link.attrib.get("href", "")
+                    rel = link.attrib.get("rel", "")
+                    if "title_detail" in href:
+                        detail_url = href
+                    elif "thumbnail" in rel or "cover" in rel:
+                        thumb_url = href
+                if not detail_url:
+                    continue
+
+                book_num = detail_url.rstrip("/").split("/")[-1]
+                source_id = f"manybooks:{book_num}"
+                if source_id in reg["source_ids"]:
+                    continue
+
+                try:
+                    droot = _parse_atom_feed(detail_url)
+                except Exception as e:
+                    print(f"[MANYBOOKS SKIP] Detail fetch failed ({detail_url}): {e}")
+                    continue
+
+                dentry = droot.find("a:entry", ATOM_NS)
+                if dentry is None:
+                    continue
+                title = (dentry.findtext("a:title", "", ATOM_NS) or droot.findtext("a:title", "", ATOM_NS) or "").strip()
+                if not title or len(title) > 120 or is_already_imported(reg, source_id, title):
+                    continue
+
+                epub_url = None
+                cover_url = thumb_url
+                for link in dentry.findall("a:link", ATOM_NS):
+                    rel = link.attrib.get("rel", "")
+                    ltype = link.attrib.get("type", "")
+                    href = link.attrib.get("href", "")
+                    if ltype == "application/epub+zip" and "acquisition" in rel:
+                        epub_url = href
+                    elif ("cover" in rel or "thumbnail" in rel) and "image/" in ltype:
+                        cover_url = href
+                if not epub_url:
+                    continue
+
+                author = normalize_author_name(dentry.findtext("a:author/a:name", "Unknown Author", ATOM_NS))
+                categories = [c.attrib.get("term", "") for c in dentry.findall("a:category", ATOM_NS) if c.attrib.get("term")]
+                if topic:
+                    categories.append(topic)
+                if not is_fiction_novel(title, categories):
+                    continue
+                genre = map_genre(categories, default=map_genre([topic], default="Fantasy") if topic else "Fantasy")
+                tags = extract_clean_tags(categories, genre)
+                content_el = dentry.find("a:content", ATOM_NS)
+                raw_desc = "".join(content_el.itertext()) if content_el is not None else ""
+                synopsis = npub.clean_text(raw_desc)[:550]
+
+                with tempfile.TemporaryDirectory() as tmp_str:
+                    tmp = Path(tmp_str)
+                    book_path = tmp / f"mb_{book_num}.epub"
+                    try:
+                        raw_bytes, _ = http_get_bytes(epub_url, timeout=45)
+                        book_path.write_bytes(raw_bytes)
+                    except Exception as e:
+                        print(f"[MANYBOOKS SKIP] Download failed for '{title}': {e}")
+                        continue
+
+                    cover_path = download_cover_to_temp(cover_url, tmp, npub.slugify(title))
+                    novel_obj, status_msg = finalize_and_validate_novel(
+                        source_file=book_path,
+                        meta_overrides={
+                            "title": title,
+                            "author": author,
+                            "genre": genre,
+                            "tags": tags,
+                            "synopsis": synopsis,
+                            "cover_file": cover_path,
+                        },
+                        source_meta={
+                            "source": "ManyBooks",
+                            "sourceId": source_id,
+                            "sourceUrl": f"https://manybooks.net/titles/{book_num}",
+                            "views_seed": random.randint(350, 9500),
+                            "rating_seed": 4.6,
+                        },
+                        min_chapters=min_chapters,
+                        min_words=min_words,
+                        dry_run=dry_run,
+                    )
+                    if novel_obj:
+                        print(f"[MANYBOOKS {status_msg}] '{novel_obj['title']}' ({novel_obj['chapterCount']} ch, {novel_obj['totalWords']} words, {genre})")
+                        if not dry_run:
+                            record_imported(reg, source_id, novel_obj["slug"], novel_obj["title"], "ManyBooks", novel_obj["chapterCount"], novel_obj["totalWords"])
+                        added.append(novel_obj)
+                    else:
+                        print(f"[MANYBOOKS SKIP] '{title}': {status_msg}")
     return added
 
 
@@ -1046,15 +1095,16 @@ def main():
         if len(added_all) < args.limit:
             added_all.extend(fetch_from_gutenberg(reg, args.limit - len(added_all), args.mode, args.topic, args.min_chapters, args.min_words, args.dry_run))
     else:
-        # "all": rotate across all 5 sources, taking up to 1-2 from each and topping off from Gutenberg
-        order = ["gutenberg", "standardebooks", "manybooks", "openlibrary", "feedbooks"]
+        # "all": distribute quota across all 5 sources and top off remaining
+        order = ["manybooks", "standardebooks", "gutenberg", "openlibrary", "feedbooks"]
+        per_source = max(1, args.limit // 4)
         for name in order:
             rem = args.limit - len(added_all)
             if rem <= 0:
                 break
-            quota = 1 if args.limit >= 3 else rem
+            quota = min(rem, per_source)
             added_all.extend(fetchers[name](reg, quota, args.mode, args.topic, args.min_chapters, args.min_words, args.dry_run))
-        for fallback_name in ["gutenberg", "standardebooks", "manybooks"]:
+        for fallback_name in ["gutenberg", "manybooks", "openlibrary"]:
             rem = args.limit - len(added_all)
             if rem <= 0:
                 break

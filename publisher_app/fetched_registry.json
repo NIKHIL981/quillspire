@@ -1,17 +1,117 @@
 {
   "version": "1.0",
-  "updatedAt": "2026-11-27T13:13:33Z",
+  "updatedAt": "2026-11-27T13:32:53Z",
   "source_ids": [
     "standardebooks:beryl-de-zoete",
     "manybooks:401025",
     "openlibrary:/works/OL77746W",
-    "standardebooks:the-duke-of-yorks-steps"
+    "standardebooks:the-duke-of-yorks-steps",
+    "openlibrary:/works/OL1168007W",
+    "openlibrary:/works/OL10432709W",
+    "openlibrary:/works/OL8193416W",
+    "openlibrary:/works/OL45499W",
+    "openlibrary:/works/OL138052W",
+    "openlibrary:/works/OL244537W",
+    "openlibrary:/works/OL1099513W",
+    "openlibrary:/works/OL450063W",
+    "openlibrary:/works/OL52267W",
+    "openlibrary:/works/OL1099280W",
+    "manybooks:396496",
+    "standardebooks:a-fighting-man-of-mars",
+    "manybooks:400541",
+    "manybooks:399552",
+    "manybooks:399773",
+    "manybooks:399553",
+    "manybooks:400830",
+    "manybooks:399768",
+    "manybooks:400658",
+    "manybooks:400865",
+    "manybooks:121080",
+    "manybooks:400713",
+    "manybooks:399772",
+    "manybooks:400714",
+    "standardebooks:constance-garnett",
+    "manybooks:399771",
+    "standardebooks:short-fiction",
+    "standardebooks:sir-nigel",
+    "standardebooks:suspense",
+    "manybooks:399924",
+    "manybooks:399627",
+    "standardebooks:the-cave-girl",
+    "manybooks:400285",
+    "standardebooks:velma-swanston-howard",
+    "manybooks:400668",
+    "manybooks:400667",
+    "standardebooks:the-gold-bag",
+    "standardebooks:the-green-mummy",
+    "manybooks:399629",
+    "manybooks:400716",
+    "manybooks:399884",
+    "manybooks:399885",
+    "manybooks:121138",
+    "standardebooks:the-prisoner-in-the-opal",
+    "manybooks:400669",
+    "manybooks:400596",
+    "manybooks:399882",
+    "standardebooks:the-vultures",
+    "manybooks:400659",
+    "standardebooks:with-edged-tools"
   ],
   "slugs": [
     "confessions-of-zeno",
     "the-paladin-chronicles",
     "anne-of-green-gables",
-    "the-duke-of-york-s-steps"
+    "the-duke-of-york-s-steps",
+    "animal-farm",
+    "novel-1795766412",
+    "the-picture-of-dorian-gray",
+    "tao-te-ching",
+    "alice-s-adventures-in-wonderland",
+    "the-art-of-war",
+    "voyage-au-centre-de-la-terre",
+    "frankenstein-or-the-modern-prometheus",
+    "the-time-machine",
+    "vingt-mille-lieues-sous-les-mers",
+    "a-convenient-risk",
+    "a-fighting-man-of-mars",
+    "breeze-spells-and-bridegrooms",
+    "claiming-her-forever",
+    "code-of-silence",
+    "dreams-for-stones",
+    "earth-wizard",
+    "echoes-beneath-the-stone",
+    "echoes-rising",
+    "evangeline",
+    "finished",
+    "grandfather-s-pigments",
+    "guardians-of-the-deep",
+    "hope-in-cripple-creek",
+    "ivanov",
+    "knight-of-two-hearts",
+    "short-fiction",
+    "sir-nigel",
+    "suspense",
+    "the-asteroid-heist",
+    "the-babbling-brook-naked-poker-club-book-1",
+    "the-cave-girl",
+    "the-elephant-in-the-ivy",
+    "the-emperor-of-portugallia",
+    "the-first-breach",
+    "the-first-forgetting",
+    "the-gold-bag",
+    "the-green-mummy",
+    "the-last-honest-man",
+    "the-meaning-of-androsia",
+    "the-moment-we-met-was-a-lie-volume-1",
+    "the-moment-we-met-was-a-lie-volume-2",
+    "the-motor-boys-overland",
+    "the-prisoner-in-the-opal",
+    "the-quiet-defector",
+    "the-ranch-went-quiet",
+    "the-trojan-treasure-conspiracy",
+    "the-vultures",
+    "this-time-she-stayed",
+    "with-edged-tools"
   ],
   "history": [
     {
@@ -49,6 +149,456 @@
       "chapters": 28,
       "words": 83518,
       "importedAt": "2026-11-27T13:13:33Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL1168007W",
+      "slug": "animal-farm",
+      "title": "Animal Farm",
+      "source": "Open Library",
+      "chapters": 89,
+      "words": 26317,
+      "importedAt": "2026-11-27T13:29:58Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL10432709W",
+      "slug": "novel-1795766412",
+      "title": "Братья Карамазовы",
+      "source": "Open Library",
+      "chapters": 872,
+      "words": 301978,
+      "importedAt": "2026-11-27T13:30:15Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL8193416W",
+      "slug": "the-picture-of-dorian-gray",
+      "title": "The Picture of Dorian Gray",
+      "source": "Open Library",
+      "chapters": 21,
+      "words": 83638,
+      "importedAt": "2026-11-27T13:30:26Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL45499W",
+      "slug": "tao-te-ching",
+      "title": "Tao te Ching",
+      "source": "Open Library",
+      "chapters": 49,
+      "words": 11073,
+      "importedAt": "2026-11-27T13:30:39Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL138052W",
+      "slug": "alice-s-adventures-in-wonderland",
+      "title": "Alice's Adventures in Wonderland",
+      "source": "Open Library",
+      "chapters": 162,
+      "words": 30831,
+      "importedAt": "2026-11-27T13:31:02Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL244537W",
+      "slug": "the-art-of-war",
+      "title": "The Art of War",
+      "source": "Open Library",
+      "chapters": 253,
+      "words": 88328,
+      "importedAt": "2026-11-27T13:31:17Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL1099513W",
+      "slug": "voyage-au-centre-de-la-terre",
+      "title": "Voyage au Centre de la Terre",
+      "source": "Open Library",
+      "chapters": 384,
+      "words": 76489,
+      "importedAt": "2026-11-27T13:31:30Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL450063W",
+      "slug": "frankenstein-or-the-modern-prometheus",
+      "title": "Frankenstein; or, The Modern Prometheus",
+      "source": "Open Library",
+      "chapters": 208,
+      "words": 76919,
+      "importedAt": "2026-11-27T13:31:56Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL52267W",
+      "slug": "the-time-machine",
+      "title": "The Time Machine",
+      "source": "Open Library",
+      "chapters": 215,
+      "words": 34355,
+      "importedAt": "2026-11-27T13:32:13Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL1099280W",
+      "slug": "vingt-mille-lieues-sous-les-mers",
+      "title": "Vingt mille lieues sous les mers",
+      "source": "Open Library",
+      "chapters": 2,
+      "words": 51526,
+      "importedAt": "2026-11-27T13:32:34Z"
+    },
+    {
+      "sourceId": "manybooks:396496",
+      "slug": "a-convenient-risk",
+      "title": "A Convenient Risk",
+      "source": "ManyBooks",
+      "chapters": 23,
+      "words": 84062,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "standardebooks:a-fighting-man-of-mars",
+      "slug": "a-fighting-man-of-mars",
+      "title": "A Fighting Man of Mars",
+      "source": "Standard Ebooks",
+      "chapters": 21,
+      "words": 86267,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:400541",
+      "slug": "breeze-spells-and-bridegrooms",
+      "title": "Breeze Spells and Bridegrooms",
+      "source": "ManyBooks",
+      "chapters": 100,
+      "words": 134319,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:399552",
+      "slug": "claiming-her-forever",
+      "title": "Claiming Her Forever",
+      "source": "ManyBooks",
+      "chapters": 36,
+      "words": 78394,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:399773",
+      "slug": "code-of-silence",
+      "title": "Code of Silence",
+      "source": "ManyBooks",
+      "chapters": 14,
+      "words": 39729,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:399553",
+      "slug": "dreams-for-stones",
+      "title": "Dreams for Stones",
+      "source": "ManyBooks",
+      "chapters": 46,
+      "words": 83889,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:400830",
+      "slug": "earth-wizard",
+      "title": "Earth Wizard",
+      "source": "ManyBooks",
+      "chapters": 2,
+      "words": 44005,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:399768",
+      "slug": "echoes-beneath-the-stone",
+      "title": "Echoes Beneath the Stone",
+      "source": "ManyBooks",
+      "chapters": 14,
+      "words": 48330,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:400658",
+      "slug": "echoes-rising",
+      "title": "Echoes Rising",
+      "source": "ManyBooks",
+      "chapters": 15,
+      "words": 17084,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:400865",
+      "slug": "evangeline",
+      "title": "Evangeline",
+      "source": "ManyBooks",
+      "chapters": 12,
+      "words": 99553,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:121080",
+      "slug": "finished",
+      "title": "Finished",
+      "source": "ManyBooks",
+      "chapters": 25,
+      "words": 123550,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:400713",
+      "slug": "grandfather-s-pigments",
+      "title": "Grandfather's Pigments",
+      "source": "ManyBooks",
+      "chapters": 14,
+      "words": 30314,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:399772",
+      "slug": "guardians-of-the-deep",
+      "title": "Guardians of the deep",
+      "source": "ManyBooks",
+      "chapters": 15,
+      "words": 42889,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:400714",
+      "slug": "hope-in-cripple-creek",
+      "title": "Hope In Cripple Creek",
+      "source": "ManyBooks",
+      "chapters": 20,
+      "words": 91327,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "standardebooks:constance-garnett",
+      "slug": "ivanov",
+      "title": "Ivanov",
+      "source": "Standard Ebooks",
+      "chapters": 7,
+      "words": 23967,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:399771",
+      "slug": "knight-of-two-hearts",
+      "title": "Knight of TWO Hearts",
+      "source": "ManyBooks",
+      "chapters": 14,
+      "words": 45353,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "standardebooks:short-fiction",
+      "slug": "short-fiction",
+      "title": "Short Fiction",
+      "source": "Standard Ebooks",
+      "chapters": 33,
+      "words": 221745,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "standardebooks:sir-nigel",
+      "slug": "sir-nigel",
+      "title": "Sir Nigel",
+      "source": "Standard Ebooks",
+      "chapters": 30,
+      "words": 132456,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "standardebooks:suspense",
+      "slug": "suspense",
+      "title": "Suspense",
+      "source": "Standard Ebooks",
+      "chapters": 44,
+      "words": 113836,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:399924",
+      "slug": "the-asteroid-heist",
+      "title": "The Asteroid Heist",
+      "source": "ManyBooks",
+      "chapters": 7,
+      "words": 21223,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:399627",
+      "slug": "the-babbling-brook-naked-poker-club-book-1",
+      "title": "The Babbling Brook Naked Poker Club, Book 1",
+      "source": "ManyBooks",
+      "chapters": 59,
+      "words": 81608,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "standardebooks:the-cave-girl",
+      "slug": "the-cave-girl",
+      "title": "The Cave Girl",
+      "source": "Standard Ebooks",
+      "chapters": 26,
+      "words": 70588,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:400285",
+      "slug": "the-elephant-in-the-ivy",
+      "title": "The Elephant in the Ivy",
+      "source": "ManyBooks",
+      "chapters": 22,
+      "words": 46138,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "standardebooks:velma-swanston-howard",
+      "slug": "the-emperor-of-portugallia",
+      "title": "The Emperor of Portugallia",
+      "source": "Standard Ebooks",
+      "chapters": 48,
+      "words": 63705,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:400668",
+      "slug": "the-first-breach",
+      "title": "The First Breach",
+      "source": "ManyBooks",
+      "chapters": 14,
+      "words": 37607,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:400667",
+      "slug": "the-first-forgetting",
+      "title": "The First Forgetting",
+      "source": "ManyBooks",
+      "chapters": 25,
+      "words": 28568,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "standardebooks:the-gold-bag",
+      "slug": "the-gold-bag",
+      "title": "The Gold Bag",
+      "source": "Standard Ebooks",
+      "chapters": 23,
+      "words": 68155,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "standardebooks:the-green-mummy",
+      "slug": "the-green-mummy",
+      "title": "The Green Mummy",
+      "source": "Standard Ebooks",
+      "chapters": 29,
+      "words": 90016,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:399629",
+      "slug": "the-last-honest-man",
+      "title": "The Last Honest Man",
+      "source": "ManyBooks",
+      "chapters": 8,
+      "words": 11950,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:400716",
+      "slug": "the-meaning-of-androsia",
+      "title": "The Meaning of Androsia",
+      "source": "ManyBooks",
+      "chapters": 14,
+      "words": 197974,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:399884",
+      "slug": "the-moment-we-met-was-a-lie-volume-1",
+      "title": "the moment we met was a lie - Volume 1",
+      "source": "ManyBooks",
+      "chapters": 6,
+      "words": 65062,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:399885",
+      "slug": "the-moment-we-met-was-a-lie-volume-2",
+      "title": "the moment we met was a lie - Volume 2",
+      "source": "ManyBooks",
+      "chapters": 6,
+      "words": 67689,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "manybooks:121138",
+      "slug": "the-motor-boys-overland",
+      "title": "The Motor Boys Overland",
+      "source": "ManyBooks",
+      "chapters": 4,
+      "words": 47154,
+      "importedAt": "2026-11-27T13:32:52Z"
+    },
+    {
+      "sourceId": "standardebooks:the-prisoner-in-the-opal",
+      "slug": "the-prisoner-in-the-opal",
+      "title": "The Prisoner in the Opal",
+      "source": "Standard Ebooks",
+      "chapters": 31,
+      "words": 104952,
+      "importedAt": "2026-11-27T13:32:53Z"
+    },
+    {
+      "sourceId": "manybooks:400669",
+      "slug": "the-quiet-defector",
+      "title": "The Quiet Defector",
+      "source": "ManyBooks",
+      "chapters": 43,
+      "words": 47018,
+      "importedAt": "2026-11-27T13:32:53Z"
+    },
+    {
+      "sourceId": "manybooks:400596",
+      "slug": "the-ranch-went-quiet",
+      "title": "The Ranch went Quiet",
+      "source": "ManyBooks",
+      "chapters": 15,
+      "words": 27310,
+      "importedAt": "2026-11-27T13:32:53Z"
+    },
+    {
+      "sourceId": "manybooks:399882",
+      "slug": "the-trojan-treasure-conspiracy",
+      "title": "The Trojan Treasure Conspiracy",
+      "source": "ManyBooks",
+      "chapters": 70,
+      "words": 82806,
+      "importedAt": "2026-11-27T13:32:53Z"
+    },
+    {
+      "sourceId": "standardebooks:the-vultures",
+      "slug": "the-vultures",
+      "title": "The Vultures",
+      "source": "Standard Ebooks",
+      "chapters": 39,
+      "words": 94014,
+      "importedAt": "2026-11-27T13:32:53Z"
+    },
+    {
+      "sourceId": "manybooks:400659",
+      "slug": "this-time-she-stayed",
+      "title": "This Time She Stayed",
+      "source": "ManyBooks",
+      "chapters": 41,
+      "words": 60950,
+      "importedAt": "2026-11-27T13:32:53Z"
+    },
+    {
+      "sourceId": "standardebooks:with-edged-tools",
+      "slug": "with-edged-tools",
+      "title": "With Edged Tools",
+      "source": "Standard Ebooks",
+      "chapters": 47,
+      "words": 107506,
+      "importedAt": "2026-11-27T13:32:53Z"
     }
   ]
 }
