@@ -20,16 +20,65 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Sync site/ to Hostinger via FTPS
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
-          username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
-          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
-          protocol: ftps
-          local-dir: ./site/
-          server-dir: ./chaya/
-          dangerous-clean-slate: false
+      - name: Sync site/ to Hostinger /chaya/ via FTPS
+        env:
+          FTP_SERVER: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+        run: |
+          python3 - <<'EOF'
+          import ftplib, os, pathlib
+
+          ftp = ftplib.FTP_TLS(os.environ["FTP_SERVER"], timeout=30)
+          ftp.login(os.environ["FTP_USERNAME"], os.environ["FTP_PASSWORD"])
+          ftp.prot_p()
+
+          remote_root = "chaya"
+          try:
+              ftp.cwd(remote_root)
+          except ftplib.error_perm:
+              ftp.mkd(remote_root)
+              ftp.cwd(remote_root)
+
+          # Remove Hostinger's placeholder default.php if present
+          try:
+              if "default.php" in ftp.nlst():
+                  ftp.delete("default.php")
+          except Exception:
+              pass
+
+          local_root = pathlib.Path("site")
+          created_dirs = {""}
+
+          def ensure_dir(rel_dir):
+              if rel_dir in created_dirs:
+                  return
+              parts = pathlib.PurePosixPath(rel_dir).parts
+              cur = ""
+              for part in parts:
+                  cur = f"{cur}/{part}" if cur else part
+                  if cur not in created_dirs:
+                      try:
+                          ftp.mkd(cur)
+                      except ftplib.error_perm:
+                          pass
+                      created_dirs.add(cur)
+
+          count = 0
+          for path in sorted(local_root.rglob("*")):
+              if path.is_dir():
+                  continue
+              rel = path.relative_to(local_root).as_posix()
+              parent = pathlib.PurePosixPath(rel).parent.as_posix()
+              if parent != ".":
+                  ensure_dir(parent)
+              with path.open("rb") as f:
+                  ftp.storbinary(f"STOR {rel}", f)
+              count += 1
+
+          ftp.quit()
+          print(f"Synced {count} files to /{remote_root}/")
+          EOF
 
   deploy-pages:
     environment:
