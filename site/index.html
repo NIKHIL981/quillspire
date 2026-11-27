@@ -3,10 +3,93 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quillspire — Web Novel Hosting & Reading Platform</title>
-  <meta name="description" content="Read, discover, and publish serialized web novels across Xianxia, LitRPG, Fantasy, Sci-Fi, Mystery, and Romance." />
-  <meta name="theme-color" content="#0b0f19" />
+
+  <!-- Primary SEO -->
+  <title>Quillspire — Free Web Novels to Read Online | Fantasy, Xianxia, LitRPG, Sci-Fi</title>
+  <meta name="description" content="Quillspire: Read free serialized web novels online. Discover top Xianxia, LitRPG, Fantasy, Sci-Fi, Mystery, Romance, and Isekai webnovels with new chapters daily. No sign-up required." />
+  <meta name="keywords" content="web novels, webnovel, read online, free novels, xianxia, litrpg, fantasy novels, isekai, cultivation, light novel, serialized fiction, transmigration, reincarnation, Quillspire" />
+  <meta name="author" content="Quillspire" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <link rel="canonical" href="https://chaya.futureagentlab.com/" />
+
+  <!-- Open Graph (Facebook, Discord, WhatsApp, LinkedIn) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Quillspire" />
+  <meta property="og:title" content="Quillspire — Read Free Web Novels Online" />
+  <meta property="og:description" content="Discover and read free serialized web novels: Xianxia, LitRPG, Fantasy, Isekai, Sci-Fi, Romance. New novels added daily. No sign-up needed." />
+  <meta property="og:url" content="https://chaya.futureagentlab.com/" />
+  <meta property="og:image" content="https://chaya.futureagentlab.com/assets/og-banner.svg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Quillspire — Free Web Novel Reading Platform" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Quillspire — Read Free Web Novels Online" />
+  <meta name="twitter:description" content="Top Xianxia, LitRPG, Fantasy, Isekai &amp; Sci-Fi web novels — free, no sign-up. New chapters daily on Quillspire." />
+  <meta name="twitter:image" content="https://chaya.futureagentlab.com/assets/og-banner.svg" />
+
+  <!-- PWA & Theme -->
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Quillspire" />
   <link rel="manifest" href="manifest.json" />
+
+  <!-- JSON-LD Structured Data (WebSite + Organization) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://chaya.futureagentlab.com/#website",
+        "url": "https://chaya.futureagentlab.com/",
+        "name": "Quillspire",
+        "description": "Free serialized web novels — Xianxia, LitRPG, Fantasy, Isekai, Sci-Fi, Romance",
+        "inLanguage": "en-US",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://chaya.futureagentlab.com/#browse?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://chaya.futureagentlab.com/#organization",
+        "name": "Quillspire",
+        "url": "https://chaya.futureagentlab.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://chaya.futureagentlab.com/assets/og-banner.svg",
+          "width": 1200,
+          "height": 630
+        },
+        "description": "Quillspire is a free web novel platform featuring Xianxia, LitRPG, Fantasy, Isekai, Sci-Fi, and Romance serialized fiction."
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://chaya.futureagentlab.com/#webpage",
+        "url": "https://chaya.futureagentlab.com/",
+        "name": "Quillspire — Free Web Novels to Read Online",
+        "isPartOf": {"@id": "https://chaya.futureagentlab.com/#website"},
+        "about": {"@id": "https://chaya.futureagentlab.com/#organization"},
+        "description": "Discover and read free serialized web novels. Fantasy, Xianxia, LitRPG, Sci-Fi, Mystery, Romance — no sign-up needed.",
+        "inLanguage": "en-US",
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://chaya.futureagentlab.com/"}
+          ]
+        }
+      }
+    ]
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet" />
@@ -123,8 +206,69 @@
     <div id="modal-box" class="surface-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 relative fade-in"></div>
   </div>
 
-  <!-- Data & Application Scripts -->
-  <script src="data/bundle.js"></script>
+
+  <!-- NoScript SEO fallback for search engines & users without JS -->
+  <noscript>
+    <style>
+      .qs-noscript{max-width:900px;margin:40px auto;font-family:sans-serif;color:#e2e8f0;
+        background:#0b0f19;padding:32px;border-radius:12px;line-height:1.6}
+      .qs-noscript a{color:#a5b4fc}
+      .qs-noscript h1{color:#818cf8;font-size:2rem;margin-bottom:8px}
+      .qs-noscript h2{color:#c4b5fd;margin-top:24px}
+      .qs-noscript ul{column-count:2;padding-left:20px;margin-top:12px}
+    </style>
+    <div class="qs-noscript">
+      <h1>Quillspire</h1>
+      <p style="color:#94a3b8">Infinite Worlds, One Chapter at a Time — Free Web Novels Online</p>
+      <p>JavaScript is required for the full reading experience. Enable JS or visit individual novel pages below.</p>
+      <h2>Browse Our 35 Novels</h2>
+      <ul>
+        <li><a href="https://chaya.futureagentlab.com/novel/a-convenient-risk/" style="color:#a5b4fc">A Convenient Risk</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/breeze-spells-and-bridegrooms/" style="color:#a5b4fc">Breeze Spells and Bridegrooms</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/claiming-her-forever/" style="color:#a5b4fc">Claiming Her Forever</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/code-of-silence/" style="color:#a5b4fc">Code of Silence</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/dreams-for-stones/" style="color:#a5b4fc">Dreams for Stones</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/earth-wizard/" style="color:#a5b4fc">Earth Wizard</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/echoes-beneath-the-stone/" style="color:#a5b4fc">Echoes Beneath the Stone</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/echoes-rising/" style="color:#a5b4fc">Echoes Rising</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/evangeline/" style="color:#a5b4fc">Evangeline</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/grandfather-s-pigments/" style="color:#a5b4fc">Grandfather&#x27;s Pigments</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/guardians-of-the-deep/" style="color:#a5b4fc">Guardians of the deep</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/hope-in-cripple-creek/" style="color:#a5b4fc">Hope In Cripple Creek</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/knight-of-two-hearts/" style="color:#a5b4fc">Knight of TWO Hearts</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-asteroid-heist/" style="color:#a5b4fc">The Asteroid Heist</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-babbling-brook-naked-poker-club-book-1/" style="color:#a5b4fc">The Babbling Brook Naked Poker Club, Book 1</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-elephant-in-the-ivy/" style="color:#a5b4fc">The Elephant in the Ivy</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-first-breach/" style="color:#a5b4fc">The First Breach</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-first-forgetting/" style="color:#a5b4fc">The First Forgetting</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-last-honest-man/" style="color:#a5b4fc">The Last Honest Man</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-meaning-of-androsia/" style="color:#a5b4fc">The Meaning of Androsia</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-moment-we-met-was-a-lie-volume-1/" style="color:#a5b4fc">the moment we met was a lie - Volume 1</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-moment-we-met-was-a-lie-volume-2/" style="color:#a5b4fc">the moment we met was a lie - Volume 2</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-paladin-chronicles/" style="color:#a5b4fc">The Paladin Chronicles</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-quiet-defector/" style="color:#a5b4fc">The Quiet Defector</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-ranch-went-quiet/" style="color:#a5b4fc">The Ranch went Quiet</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-trojan-treasure-conspiracy/" style="color:#a5b4fc">The Trojan Treasure Conspiracy</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/this-time-she-stayed/" style="color:#a5b4fc">This Time She Stayed</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-tea-shop-at-worlds-edge/" style="color:#a5b4fc">The Tea Shop at World&#x27;s Edge</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/jade-sovereign-of-the-shattered-heavens/" style="color:#a5b4fc">Jade Sovereign of the Shattered Heavens</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/architect-of-the-infinite-dungeon/" style="color:#a5b4fc">Architect of the Infinite Dungeon</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/velvet-dagger-crown-of-ash/" style="color:#a5b4fc">Velvet Dagger, Crown of Ash</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/neon-requiem-2099/" style="color:#a5b4fc">Neon Requiem 2099</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/ember-born-academy/" style="color:#a5b4fc">Ember-Born Academy</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/the-thirteenth-witness/" style="color:#a5b4fc">The Thirteenth Witness</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novel/chronicles-of-the-clockwork-archive/" style="color:#a5b4fc">Chronicles of the Clockwork Archive</a></li>
+      </ul>
+      <p style="margin-top:16px">Genre highlights: <strong>Xianxia</strong>, <strong>LitRPG</strong>, <strong>Fantasy</strong>, <strong>Isekai</strong>, <strong>Sci-Fi</strong>, <strong>Romance</strong>, <strong>Mystery</strong></p>
+    </div>
+  </noscript>
+
+  <!-- Data & Application Scripts (only load 28MB offline bundle when opened via file://) -->
+  <script>
+    if (location.protocol === 'file:') {
+      document.write('<script src="data/bundle.js"><\/script>');
+    }
+  </script>
   <script src="js/store.js"></script>
   <script src="js/importer.js"></script>
   <script src="js/app.js"></script>

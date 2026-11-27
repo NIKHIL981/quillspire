@@ -42,6 +42,44 @@ const AppState = {
 };
 
 // ------------------------- UTILITIES -------------------------
+// ==== SEO helpers injected by seo_upgrade pipeline ====
+function injectNovelJsonLd(novel) {
+  var ex = document.getElementById('novel-jsonld');
+  if (ex) ex.remove();
+  var ld = {
+    '@context': 'https://schema.org',
+    '@type': 'Book',
+    'name': novel.title,
+    'author': { '@type': 'Person', 'name': novel.author },
+    'genre': novel.genre,
+    'description': (novel.synopsis || '').slice(0, 300),
+    'url': 'https://chaya.futureagentlab.com/novel/' + novel.slug + '/',
+    'numberOfPages': novel.totalChapters || 0,
+    'inLanguage': 'en',
+    'publisher': { '@type': 'Organization', 'name': 'Quillspire' }
+  };
+  if (novel.cover) ld.image = novel.cover;
+  var s = document.createElement('script');
+  s.type = 'application/ld+json';
+  s.id = 'novel-jsonld';
+  s.textContent = JSON.stringify(ld);
+  document.head.appendChild(s);
+}
+
+function updateNovelMeta(novel) {
+  injectNovelJsonLd(novel);
+  document.title = novel.title + ' by ' + novel.author + ' \u2014 Read Free on Quillspire';
+  var c = document.querySelector('link[rel="canonical"]');
+  if (c) c.setAttribute('href', 'https://chaya.futureagentlab.com/novel/' + novel.slug + '/');
+  var d = document.querySelector('meta[name="description"]');
+  if (d) d.setAttribute('content', (novel.synopsis || '').slice(0, 160) || 'Read ' + novel.title + ' on Quillspire.');
+  var ot = document.querySelector('meta[property="og:title"]');
+  if (ot) ot.setAttribute('content', novel.title + ' by ' + novel.author + ' \u2014 Quillspire');
+  var od = document.querySelector('meta[property="og:description"]');
+  if (od) od.setAttribute('content', (novel.synopsis || '').slice(0, 200));
+}
+// ==== end SEO helpers ====
+
 function esc(str) {
   return String(str ?? '')
     .replace(/&/g, '&amp;')
@@ -371,7 +409,7 @@ function renderHeroSlide(n, total, idx) {
   return `
   <div class="relative p-6 sm:p-10 flex flex-col md:flex-row items-center gap-8 overflow-hidden">
     <div class="absolute inset-0 opacity-20 blur-3xl pointer-events-none" style="background: radial-gradient(circle at 20% 50%, #6366f1, transparent 60%), radial-gradient(circle at 80% 30%, #f59e0b, transparent 60%);"></div>
-    <img src="${esc(n.cover)}" class="relative w-40 sm:w-48 aspect-[2/3] rounded-2xl object-cover shadow-2xl border border-white/15 shrink-0" />
+    <img src="${esc(n.cover)}" alt="${esc(n.title)}" fetchpriority="high" class="relative w-40 sm:w-48 aspect-[2/3] rounded-2xl object-cover shadow-2xl border border-white/15 shrink-0" />
     <div class="relative flex-1 text-center md:text-left space-y-3">
       <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
         <span class="px-3 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">FEATURED SPOTLIGHT</span>
@@ -659,6 +697,7 @@ async function renderNovelDetail(slug) {
     root.innerHTML = `<div class="max-w-xl mx-auto p-12 text-center space-y-4"><h2 class="text-2xl font-bold">Novel Not Found</h2><a href="#home" class="inline-block px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-bold">Return Home</a></div>`;
     return;
   }
+  updateNovelMeta(novel);
 
   const prog = InkStore.getProgress(slug);
   const shelf = InkStore.getShelf(slug);
@@ -715,7 +754,7 @@ async function renderNovelDetail(slug) {
 
           <!-- Tags -->
           <div class="flex flex-wrap gap-1.5">
-            ${(novel.tags || []).map(t => `<button onclick="AppState.browse.includeTags=['${esc(t)}'];location.hash='#browse'" class="px-2.5 py-1 rounded-lg surface-card text-xs hover:text-indigo-400 transition">#${esc(t)}</button>`).join('')}
+            ${(novel.tags || []).map(t => `<button onclick="goBrowseTag('${esc(t)}')" class="px-2.5 py-1 rounded-lg surface-card text-xs hover:text-indigo-400 transition">#${esc(t)}</button>`).join('')}
           </div>
 
           <!-- Action Buttons -->
@@ -1938,6 +1977,15 @@ window.addEventListener('DOMContentLoaded', async () => {
   // Apply Branding from config.json
   const cfg = InkStore.config;
   document.title = `${cfg.siteName} — ${cfg.tagline}`;
+  // SEO: reset canonical + meta on home
+  (function(){
+    var _c=document.querySelector('link[rel="canonical"]');
+    if(_c)_c.setAttribute('href','https://chaya.futureagentlab.com/');
+    var _d=document.querySelector('meta[name="description"]');
+    if(_d)_d.setAttribute('content','Quillspire: Read free serialized web novels online. Discover Xianxia, LitRPG, Fantasy, Sci-Fi, Isekai webnovels with new chapters daily. No sign-up required.');
+    var _ot=document.querySelector('meta[property="og:title"]');
+    if(_ot)_ot.setAttribute('content','Quillspire — Read Free Web Novels Online');
+  })();
   document.getElementById('brand-name').textContent = cfg.siteName;
   document.getElementById('brand-tagline').textContent = cfg.tagline;
   document.getElementById('footer-brand').textContent = cfg.siteName;

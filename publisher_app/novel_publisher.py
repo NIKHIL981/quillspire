@@ -491,7 +491,7 @@ def import_novel_source(source_path: Path, overrides=None, append_to_slug=None):
     return novel_obj, len(built_chapters), False
 
 
-def rebuild_site_index(base_url=""):
+def rebuild_site_index(base_url="https://chaya.futureagentlab.com"):
     summaries = []
     bundle_novels = {}
     for jf in sorted(NOVELS_DIR.glob("*.json")):
@@ -548,10 +548,105 @@ def rebuild_site_index(base_url=""):
     )
     (DATA_DIR / "bundle.js").write_text(bundle_js, encoding="utf-8")
 
-    prefix = base_url.rstrip("/")
-    urls = [f"  <url><loc>{prefix}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>"]
+    prefix = (base_url or "https://chaya.futureagentlab.com").rstrip("/")
+    today_str = datetime.now().strftime("%Y-%m-%d")
+
+    # Generate static SEO stub pages under site/novel/<slug>/index.html
+    novel_pages_dir = SITE_DIR / "novel"
+    novel_pages_dir.mkdir(parents=True, exist_ok=True)
     for s in summaries:
-        urls.append(f"  <url><loc>{prefix}/#novel/{urllib.parse.quote(s['slug'])}</loc><lastmod>{s['updatedAt']}</lastmod><priority>0.8</priority></url>")
+        slug = s["slug"]
+        title_esc = html.escape(s["title"])
+        author_esc = html.escape(s["author"])
+        genre_esc = html.escape(s["genre"])
+        syn_raw = (s.get("synopsis") or f"Read {s['title']} online on Quillspire.")[:300]
+        syn_esc = html.escape(syn_raw)
+        tags_str = html.escape(", ".join(s.get("tags", [])[:6]) or s["genre"])
+        cov = s.get("cover") or f"{prefix}/assets/covers/{slug}.svg"
+        if cov and not cov.startswith("http"):
+            cov = f"{prefix}/{cov.lstrip('/')}"
+        page_url = f"{prefix}/novel/{urllib.parse.quote(slug)}/"
+        book_ld = {
+            "@context": "https://schema.org",
+            "@type": "Book",
+            "@id": page_url,
+            "name": s["title"],
+            "author": {"@type": "Person", "name": s["author"]},
+            "genre": s["genre"],
+            "description": syn_raw,
+            "url": page_url,
+            "inLanguage": "en",
+            "numberOfPages": s.get("chapterCount", 0),
+            "publisher": {"@type": "Organization", "name": cfg.get("siteName", "Quillspire")},
+            "image": cov,
+            "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "Home", "item": f"{prefix}/"},
+                    {"@type": "ListItem", "position": 2, "name": "Browse", "item": f"{prefix}/#browse"},
+                    {"@type": "ListItem", "position": 3, "name": s["title"], "item": page_url},
+                ],
+            },
+        }
+        stub_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title_esc} by {author_esc} \u2014 Read Free on Quillspire</title>
+  <meta name="description" content="Read '{title_esc}' by {author_esc} \u2014 {genre_esc}. {syn_esc[:160]}" />
+  <meta name="keywords" content="{title_esc}, {author_esc}, {genre_esc}, {tags_str}, web novel, free online, Quillspire" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="{page_url}" />
+  <meta property="og:type" content="book" />
+  <meta property="og:site_name" content="Quillspire" />
+  <meta property="og:title" content="{title_esc} \u2014 Quillspire" />
+  <meta property="og:description" content="{syn_esc[:200]}" />
+  <meta property="og:url" content="{page_url}" />
+  <meta property="og:image" content="{html.escape(cov)}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{title_esc} \u2014 Read Free on Quillspire" />
+  <meta name="twitter:description" content="{syn_esc[:160]}" />
+  <meta name="twitter:image" content="{html.escape(cov)}" />
+  <script type="application/ld+json">
+{json.dumps(book_ld, ensure_ascii=False, indent=2)}
+  </script>
+  <meta http-equiv="refresh" content="0; url={prefix}/#novel/{urllib.parse.quote(slug)}" />
+  <style>
+    body{{margin:0;background:#0b0f19;color:#e2e8f0;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center}}
+    a{{color:#818cf8;text-decoration:none}}
+    .card{{max-width:520px;padding:32px;background:#1a1f2e;border-radius:16px;border:1px solid #2d3348}}
+    h1{{font-size:1.5rem;margin-bottom:8px;color:#c4b5fd}}
+    .meta{{color:#94a3b8;font-size:.9rem;margin-bottom:16px}}
+    .btn{{display:inline-block;margin-top:16px;padding:12px 28px;background:#6366f1;color:#fff;border-radius:8px;font-weight:600}}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>{title_esc}</h1>
+    <div class="meta">by {author_esc} &bull; {genre_esc} &bull; {s.get('chapterCount', 0)} Chapters &bull; {html.escape(s.get('status', 'Ongoing'))}</div>
+    <p style="color:#cbd5e1;font-size:.9rem">{syn_esc[:200]}</p>
+    <a class="btn" href="{prefix}/#novel/{urllib.parse.quote(slug)}">Read Now on Quillspire</a>
+    <p style="margin-top:16px;font-size:.8rem;color:#64748b">
+      <a href="{prefix}/">Back to Quillspire Home</a> &bull;
+      <a href="{prefix}/#browse">Browse All Novels</a>
+    </p>
+  </div>
+</body>
+</html>
+"""
+        slug_dir = novel_pages_dir / slug
+        slug_dir.mkdir(parents=True, exist_ok=True)
+        (slug_dir / "index.html").write_text(stub_html, encoding="utf-8")
+
+    urls = [
+        f"  <url><loc>{prefix}/</loc><lastmod>{today_str}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>",
+        f"  <url><loc>{prefix}/#browse</loc><lastmod>{today_str}</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>",
+        f"  <url><loc>{prefix}/#rankings</loc><lastmod>{today_str}</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>",
+    ]
+    for s in summaries:
+        qslug = urllib.parse.quote(s["slug"])
+        urls.append(f"  <url><loc>{prefix}/novel/{qslug}/</loc><lastmod>{s['updatedAt']}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>")
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
     (SITE_DIR / "sitemap.xml").write_text(sitemap, encoding="utf-8")
     return len(summaries)
