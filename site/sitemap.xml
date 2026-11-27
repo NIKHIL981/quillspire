@@ -2,59 +2,32 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
   <url><loc>/#novel/a-convenient-risk</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/a-fighting-man-of-mars</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/alice-s-adventures-in-wonderland</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/animal-farm</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/anne-of-green-gables</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/breeze-spells-and-bridegrooms</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/claiming-her-forever</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/code-of-silence</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/confessions-of-zeno</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/dreams-for-stones</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/earth-wizard</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/echoes-beneath-the-stone</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/echoes-rising</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/evangeline</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/finished</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/frankenstein-or-the-modern-prometheus</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/grandfather-s-pigments</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/guardians-of-the-deep</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/hope-in-cripple-creek</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/ivanov</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/knight-of-two-hearts</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/novel-1795766412</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/short-fiction</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/sir-nigel</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/suspense</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/tao-te-ching</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/the-art-of-war</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-asteroid-heist</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-babbling-brook-naked-poker-club-book-1</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/the-cave-girl</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/the-duke-of-york-s-steps</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-elephant-in-the-ivy</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/the-emperor-of-portugallia</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-first-breach</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-first-forgetting</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/the-gold-bag</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/the-green-mummy</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-last-honest-man</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-meaning-of-androsia</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-moment-we-met-was-a-lie-volume-1</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-moment-we-met-was-a-lie-volume-2</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/the-motor-boys-overland</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-paladin-chronicles</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/the-picture-of-dorian-gray</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/the-prisoner-in-the-opal</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-quiet-defector</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-ranch-went-quiet</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/the-time-machine</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-trojan-treasure-conspiracy</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/the-vultures</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/this-time-she-stayed</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/vingt-mille-lieues-sous-les-mers</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/voyage-au-centre-de-la-terre</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
-  <url><loc>/#novel/with-edged-tools</loc><lastmod>2026-11-27</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/the-tea-shop-at-worlds-edge</loc><lastmod>2026-11-25</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/jade-sovereign-of-the-shattered-heavens</loc><lastmod>2026-11-24</lastmod><priority>0.8</priority></url>
   <url><loc>/#novel/architect-of-the-infinite-dungeon</loc><lastmod>2026-11-23</lastmod><priority>0.8</priority></url>

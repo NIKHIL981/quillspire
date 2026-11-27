@@ -6,6 +6,7 @@ const AppState = {
   heroTimer: null,
   browse: {
     query: '',
+    tagQuery: '',
     genre: 'All',
     status: 'All',
     rating: 'All',
@@ -13,6 +14,8 @@ const AppState = {
     includeTags: [],
     excludeTags: [],
     sort: 'trending',
+    page: 1,
+    perPage: 16,
   },
   rankingsTab: 'trending',
   rankingsGenre: 'All',
@@ -207,7 +210,9 @@ function renderHome() {
 
   const trending = [...InkStore.catalog].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 8);
   const latest = [...InkStore.catalog].sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || '')).slice(0, 8);
+  const longSeries = [...InkStore.catalog].filter(n => (n.chapterCount || 0) >= 40).sort((a, b) => (b.chapterCount || 0) - (a.chapterCount || 0)).slice(0, 8);
   const genres = allGenres();
+  const topTags = allTags().slice(0, 14);
   const collections = InkStore.config?.collections || [];
 
   root.innerHTML = `
@@ -217,12 +222,21 @@ function renderHome() {
       ${renderHeroSlide(heroList[AppState.heroIdx], heroList.length, AppState.heroIdx)}
     </section>
 
-    <!-- Quick Genre Pills -->
-    <section class="flex items-center gap-2 overflow-x-auto pb-2">
-      <button onclick="goBrowseGenre('All')" class="shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold bg-indigo-600 text-white shadow">All Genres</button>
-      ${genres.map(g => `
-        <button onclick="goBrowseGenre('${esc(g)}')" class="shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold surface-card hover:border-indigo-500/60 hover:text-indigo-400 transition">${esc(g)}</button>
-      `).join('')}
+    <!-- Quick Genre & Tag Pills -->
+    <section class="space-y-2.5">
+      <div class="flex items-center gap-2 overflow-x-auto pb-1">
+        <button onclick="goBrowseGenre('All')" class="shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold bg-indigo-600 text-white shadow">All Genres</button>
+        ${genres.map(g => `
+          <button onclick="goBrowseGenre('${esc(g)}')" class="shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold surface-card hover:border-indigo-500/60 hover:text-indigo-400 transition">${esc(g)}</button>
+        `).join('')}
+      </div>
+      ${topTags.length ? `
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+        <span class="shrink-0 text-[11px] font-bold uppercase tracking-wider text-muted mr-1">Popular Tags:</span>
+        ${topTags.map(t => `
+          <button onclick="goBrowseTag('${esc(t)}')" class="shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium surface-subtle hover:text-indigo-400 hover:border-indigo-500/50 border border-transparent transition">#${esc(t)}</button>
+        `).join('')}
+      </div>` : ''}
     </section>
 
     ${continueItems.length ? `
@@ -314,6 +328,21 @@ function renderHome() {
       </div>
     </section>
 
+    ${longSeries.length ? `
+    <!-- Long-Form & 40+ Chapter Series -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-xl font-extrabold flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-violet-400"></i> Deep-Dive Series (40+ Chapters)</h2>
+          <p class="text-xs text-muted mt-0.5">Binge-worthy multi-arc stories</p>
+        </div>
+        <button onclick="AppState.browse.minChapters=40;AppState.browse.page=1;location.hash='#browse'" class="text-xs font-semibold text-indigo-400 hover:underline">See All Long Series &rarr;</button>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+        ${longSeries.map(n => renderNovelCard(n)).join('')}
+      </div>
+    </section>` : ''}
+
     <!-- Author Callout Banner -->
     <section class="rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-indigo-900/60 via-violet-900/50 to-fuchsia-900/40 border border-indigo-500/30 flex flex-col sm:flex-row items-center justify-between gap-6">
       <div>
@@ -378,6 +407,14 @@ function setHeroSlide(i) {
 
 function goBrowseGenre(g) {
   AppState.browse.genre = g;
+  AppState.browse.page = 1;
+  location.hash = '#browse';
+}
+
+function goBrowseTag(t) {
+  AppState.browse.includeTags = [t];
+  AppState.browse.excludeTags = [];
+  AppState.browse.page = 1;
   location.hash = '#browse';
 }
 
@@ -386,13 +423,15 @@ function renderBrowse() {
   const root = document.getElementById('app-root');
   const b = AppState.browse;
   const genres = ['All', ...allGenres()];
-  const tags = allTags().slice(0, 24);
+  const tagQ = (b.tagQuery || '').trim().toLowerCase();
+  const matchedTags = allTags().filter(t => !tagQ || t.toLowerCase().includes(tagQ));
+  const tags = matchedTags.slice(0, 36);
 
   let filtered = InkStore.catalog.filter(n => {
     if (b.genre !== 'All' && n.genre !== b.genre) return false;
     if (b.status !== 'All' && n.status !== b.status) return false;
     if (b.rating !== 'All' && n.contentRating !== b.rating) return false;
-    if ((n.chapterCount || 0) < b.minChapters) return false;
+    if ((n.chapterCount || 0) < (Number(b.minChapters) || 0)) return false;
     if (b.query) {
       const q = b.query.toLowerCase();
       const hay = `${n.title} ${n.author} ${n.genre} ${n.synopsis} ${(n.tags || []).join(' ')}`.toLowerCase();
@@ -410,22 +449,34 @@ function renderBrowse() {
   else if (b.sort === 'chapters') filtered.sort((a, b2) => (b2.chapterCount || 0) - (a.chapterCount || 0));
   else if (b.sort === 'words') filtered.sort((a, b2) => (b2.totalWords || 0) - (a.totalWords || 0));
 
+  const perPage = b.perPage || 16;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+  const curPage = Math.min(Math.max(1, b.page || 1), totalPages);
+  b.page = curPage;
+  const startIdx = (curPage - 1) * perPage;
+  const paged = filtered.slice(startIdx, startIdx + perPage);
+
   root.innerHTML = `
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6 fade-in">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold">Browse & Advanced Filter</h1>
-        <p class="text-sm text-muted mt-1">Click a tag once to <span class="text-emerald-400 font-semibold">Include</span>, click again to <span class="text-rose-400 font-semibold">Exclude</span>, third click resets.</p>
+        <h1 class="text-2xl sm:text-3xl font-extrabold">Browse & Advanced Search</h1>
+        <p class="text-sm text-muted mt-1">Search by title, author, genre, or tags. Click a tag once to <span class="text-emerald-400 font-semibold">Include</span>, twice to <span class="text-rose-400 font-semibold">Exclude</span>, third click resets.</p>
       </div>
-      <div class="text-sm font-semibold text-indigo-400">${filtered.length} novels found</div>
+      <div class="text-sm font-semibold text-indigo-400">
+        ${filtered.length ? `Showing ${startIdx + 1}–${Math.min(startIdx + perPage, filtered.length)} of ${filtered.length} novels` : '0 novels found'}
+      </div>
     </div>
 
     <!-- Filter Panel -->
     <div class="surface-card rounded-2xl p-5 space-y-4">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
         <input id="browse-q" value="${esc(b.query)}" oninput="updateBrowse('query', this.value)" placeholder="Search title, author, synopsis..." class="lg:col-span-2 px-3.5 py-2 rounded-xl surface-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         <select onchange="updateBrowse('genre', this.value)" class="px-3 py-2 rounded-xl surface-subtle text-sm">
           ${genres.map(g => `<option value="${esc(g)}" ${b.genre === g ? 'selected' : ''}>Genre: ${esc(g)}</option>`).join('')}
+        </select>
+        <select onchange="updateBrowse('minChapters', Number(this.value))" class="px-3 py-2 rounded-xl surface-subtle text-sm">
+          ${[0, 10, 30, 50, 100].map(m => `<option value="${m}" ${Number(b.minChapters) === m ? 'selected' : ''}>${m === 0 ? 'Chapters: Any' : `Chapters: ${m}+`}</option>`).join('')}
         </select>
         <select onchange="updateBrowse('status', this.value)" class="px-3 py-2 rounded-xl surface-subtle text-sm">
           ${['All', 'Ongoing', 'Completed', 'Hiatus'].map(s => `<option value="${s}" ${b.status === s ? 'selected' : ''}>Status: ${s}</option>`).join('')}
@@ -439,28 +490,42 @@ function renderBrowse() {
         </select>
       </div>
 
-      <!-- Tri-state Tag Filter -->
-      <div class="flex flex-wrap items-center gap-2 pt-1">
-        <span class="text-xs font-bold text-muted uppercase tracking-wider mr-1">Tags:</span>
-        ${tags.map(t => {
-          const isInc = b.includeTags.includes(t);
-          const isExc = b.excludeTags.includes(t);
-          const cls = isInc ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'
-            : isExc ? 'bg-rose-500/20 text-rose-300 border-rose-500/50 line-through'
-            : 'surface-subtle text-muted hover:text-[var(--text-primary)]';
-          return `<button onclick="cycleTagFilter('${esc(t)}')" class="px-2.5 py-1 rounded-lg text-xs font-medium border transition ${cls}">${isInc ? '+ ' : isExc ? '− ' : ''}${esc(t)}</button>`;
-        }).join('')}
-        ${(b.includeTags.length || b.excludeTags.length || b.query || b.genre !== 'All' || b.status !== 'All') ? `
-          <button onclick="resetBrowseFilters()" class="ml-auto px-3 py-1 rounded-lg text-xs font-bold text-rose-400 hover:bg-rose-500/10">Reset All</button>
-        ` : ''}
+      <!-- Search by Tags + Tri-state Tag Filter -->
+      <div class="space-y-2.5 pt-1 border-t border-subtle">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2">
+          <span class="text-xs font-bold text-muted uppercase tracking-wider">Search & Filter by Tags (${matchedTags.length} available):</span>
+          <input id="browse-tag-q" value="${esc(b.tagQuery || '')}" oninput="updateBrowse('tagQuery', this.value)" placeholder="Search tags (e.g. transmigration, magic, romance)..." class="sm:w-72 px-3 py-1.5 rounded-lg surface-subtle text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          ${tags.map(t => {
+            const isInc = b.includeTags.includes(t);
+            const isExc = b.excludeTags.includes(t);
+            const cls = isInc ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'
+              : isExc ? 'bg-rose-500/20 text-rose-300 border-rose-500/50 line-through'
+              : 'surface-subtle text-muted hover:text-[var(--text-primary)]';
+            return `<button onclick="cycleTagFilter('${esc(t)}')" class="px-2.5 py-1 rounded-lg text-xs font-medium border transition ${cls}">${isInc ? '+ ' : isExc ? '− ' : ''}${esc(t)}</button>`;
+          }).join('')}
+          ${(b.includeTags.length || b.excludeTags.length || b.query || b.tagQuery || b.genre !== 'All' || b.status !== 'All' || Number(b.minChapters) > 0) ? `
+            <button onclick="resetBrowseFilters()" class="ml-auto px-3 py-1 rounded-lg text-xs font-bold text-rose-400 hover:bg-rose-500/10">Reset All</button>
+          ` : ''}
+        </div>
       </div>
     </div>
 
     <!-- Results Grid -->
-    ${filtered.length ? `
+    ${paged.length ? `
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-        ${filtered.map(n => renderNovelCard(n)).join('')}
+        ${paged.map(n => renderNovelCard(n)).join('')}
       </div>
+      ${totalPages > 1 ? `
+      <div class="flex flex-wrap items-center justify-center gap-2 pt-4">
+        <button onclick="setBrowsePage(${curPage - 1})" ${curPage <= 1 ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl surface-card text-xs font-semibold disabled:opacity-40 hover:border-indigo-500/60 transition">&larr; Prev</button>
+        ${Array.from({ length: totalPages }).map((_, idx) => {
+          const p = idx + 1;
+          return `<button onclick="setBrowsePage(${p})" class="px-3.5 py-2 rounded-xl text-xs font-bold transition ${p === curPage ? 'bg-indigo-600 text-white shadow' : 'surface-card hover:border-indigo-500/60'}">${p}</button>`;
+        }).join('')}
+        <button onclick="setBrowsePage(${curPage + 1})" ${curPage >= totalPages ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl surface-card text-xs font-semibold disabled:opacity-40 hover:border-indigo-500/60 transition">Next &rarr;</button>
+      </div>` : ''}
     ` : `
       <div class="surface-card rounded-2xl p-12 text-center space-y-3">
         <i data-lucide="search-x" class="w-10 h-10 text-muted mx-auto"></i>
@@ -472,10 +537,20 @@ function renderBrowse() {
   </div>`;
 }
 
-function updateBrowse(key, val) {
-  AppState.browse[key] = val;
+function setBrowsePage(p) {
+  AppState.browse.page = p;
   renderBrowse();
   refreshIcons();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateBrowse(key, val) {
+  AppState.browse[key] = val;
+  AppState.browse.page = 1;
+  renderBrowse();
+  refreshIcons();
+  if (key === 'query') document.getElementById('browse-q')?.focus();
+  if (key === 'tagQuery') document.getElementById('browse-tag-q')?.focus();
 }
 
 function cycleTagFilter(tag) {
@@ -488,12 +563,13 @@ function cycleTagFilter(tag) {
   } else {
     b.includeTags.push(tag);
   }
+  b.page = 1;
   renderBrowse();
   refreshIcons();
 }
 
 function resetBrowseFilters() {
-  AppState.browse = { query: '', genre: 'All', status: 'All', rating: 'All', minChapters: 0, includeTags: [], excludeTags: [], sort: 'trending' };
+  AppState.browse = { query: '', tagQuery: '', genre: 'All', status: 'All', rating: 'All', minChapters: 0, includeTags: [], excludeTags: [], sort: 'trending', page: 1, perPage: 16 };
   renderBrowse();
   refreshIcons();
 }
