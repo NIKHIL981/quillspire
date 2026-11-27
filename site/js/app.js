@@ -15,10 +15,12 @@ const AppState = {
     excludeTags: [],
     sort: 'trending',
     page: 1,
-    perPage: 16,
+    perPage: 24,
+    visibleCount: 24,
   },
   rankingsTab: 'trending',
   rankingsGenre: 'All',
+  rankingsLimit: 24,
   libraryShelf: 'All',
   novelDetailTab: 'toc',
   tocSortAsc: true,
@@ -32,6 +34,7 @@ const AppState = {
     autoScrollRaf: null,
     scrollAccum: 0,
   },
+  studioUnlocked: sessionStorage.getItem('quillspire_studio_unlocked') === '1',
   studio: {
     tab: 'bulk', // 'bulk' | 'novels' | 'editor' | 'github'
     editingSlug: null,
@@ -53,7 +56,7 @@ function injectNovelJsonLd(novel) {
     'author': { '@type': 'Person', 'name': novel.author },
     'genre': novel.genre,
     'description': (novel.synopsis || '').slice(0, 300),
-    'url': 'https://chaya.futureagentlab.com/novel/' + novel.slug + '/',
+    'url': 'https://chaya.futureagentlab.com/novels/' + novel.slug + '/',
     'numberOfPages': novel.totalChapters || 0,
     'inLanguage': 'en',
     'publisher': { '@type': 'Organization', 'name': 'Quillspire' }
@@ -70,7 +73,7 @@ function updateNovelMeta(novel) {
   injectNovelJsonLd(novel);
   document.title = novel.title + ' by ' + novel.author + ' \u2014 Read Free on Quillspire';
   var c = document.querySelector('link[rel="canonical"]');
-  if (c) c.setAttribute('href', 'https://chaya.futureagentlab.com/novel/' + novel.slug + '/');
+  if (c) c.setAttribute('href', 'https://chaya.futureagentlab.com/novels/' + novel.slug + '/');
   var d = document.querySelector('meta[name="description"]');
   if (d) d.setAttribute('content', (novel.synopsis || '').slice(0, 160) || 'Read ' + novel.title + ' on Quillspire.');
   var ot = document.querySelector('meta[property="og:title"]');
@@ -79,6 +82,22 @@ function updateNovelMeta(novel) {
   if (od) od.setAttribute('content', (novel.synopsis || '').slice(0, 200));
 }
 // ==== end SEO helpers ====
+
+function coverFallback(img, title, author, genre) {
+  if (!img || img.dataset.fbApplied) return;
+  img.dataset.fbApplied = '1';
+  img.src = InkImporter.generateCoverDataUrl(title || 'Novel', author || 'Unknown', genre || 'Fantasy');
+}
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const act = btn.dataset.action;
+  if (act === 'browse-genre') goBrowseGenre(btn.dataset.genre || 'All');
+  else if (act === 'browse-tag') goBrowseTag(btn.dataset.tag || '');
+  else if (act === 'cycle-tag') cycleTagFilter(btn.dataset.tag || '');
+});
+
 
 function esc(str) {
   return String(str ?? '')
@@ -200,14 +219,14 @@ async function handleRoute() {
 // ------------------------- SHARED CARD RENDERER -------------------------
 function renderNovelCard(n, compact = false) {
   const shelf = InkStore.getShelf(n.slug);
-  const statusColor = n.status === 'Completed' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-    : n.status === 'Hiatus' ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-    : 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30';
+  const statusColor = n.status === 'Completed' ? 'badge-emerald'
+    : n.status === 'Hiatus' ? 'badge-amber'
+    : 'badge-indigo';
 
   return `
   <a href="#novel/${encodeURIComponent(n.slug)}" class="surface-card cover-card rounded-2xl overflow-hidden flex flex-col group">
     <div class="relative aspect-[2/3] w-full overflow-hidden bg-slate-900">
-      <img src="${esc(n.cover || InkImporter.generateCoverDataUrl(n.title, n.author, n.genre))}" alt="${esc(n.title)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy" />
+      <img src="${esc(n.cover || InkImporter.generateCoverDataUrl(n.title, n.author, n.genre))}" alt="${esc(n.title)}" data-fb-title="${esc(n.title)}" data-fb-author="${esc(n.author)}" data-fb-genre="${esc(n.genre)}" onerror="coverFallback(this,this.dataset.fbTitle,this.dataset.fbAuthor,this.dataset.fbGenre)" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent"></div>
       <div class="absolute top-2.5 left-2.5 flex flex-wrap gap-1">
         <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md border backdrop-blur-md ${statusColor}">${esc(n.status)}</span>
@@ -263,16 +282,16 @@ function renderHome() {
     <!-- Quick Genre & Tag Pills -->
     <section class="space-y-2.5">
       <div class="flex items-center gap-2 overflow-x-auto pb-1">
-        <button onclick="goBrowseGenre('All')" class="shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold bg-indigo-600 text-white shadow">All Genres</button>
+        <button data-action="browse-genre" data-genre="All" class="shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold bg-indigo-600 text-white shadow">All Genres</button>
         ${genres.map(g => `
-          <button onclick="goBrowseGenre('${esc(g)}')" class="shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold surface-card hover:border-indigo-500/60 hover:text-indigo-400 transition">${esc(g)}</button>
+          <button data-action="browse-genre" data-genre="${esc(g)}" class="shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold surface-card hover:border-indigo-500/60 hover:text-indigo-400 transition">${esc(g)}</button>
         `).join('')}
       </div>
       ${topTags.length ? `
       <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
         <span class="shrink-0 text-[11px] font-bold uppercase tracking-wider text-muted mr-1">Popular Tags:</span>
         ${topTags.map(t => `
-          <button onclick="goBrowseTag('${esc(t)}')" class="shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium surface-subtle hover:text-indigo-400 hover:border-indigo-500/50 border border-transparent transition">#${esc(t)}</button>
+          <button data-action="browse-tag" data-tag="${esc(t)}" class="shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium surface-subtle hover:text-indigo-400 hover:border-indigo-500/50 border border-transparent transition">#${esc(t)}</button>
         `).join('')}
       </div>` : ''}
     </section>
@@ -287,7 +306,7 @@ function renderHome() {
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         ${continueItems.map(({ novel, prog }) => `
           <a href="#read/${encodeURIComponent(novel.slug)}/${prog.chapterNumber}" class="surface-card cover-card rounded-2xl p-3 flex gap-3 items-center">
-            <img src="${esc(novel.cover)}" class="w-14 h-20 rounded-lg object-cover shrink-0" />
+            <img src="${esc(novel.cover)}" alt="${esc(novel.title)}" data-fb-title="${esc(novel.title)}" data-fb-author="${esc(novel.author)}" data-fb-genre="${esc(novel.genre)}" onerror="coverFallback(this,this.dataset.fbTitle,this.dataset.fbAuthor,this.dataset.fbGenre)" class="w-14 h-20 rounded-lg object-cover shrink-0" loading="lazy" />
             <div class="min-w-0 flex-1">
               <div class="font-bold text-sm truncate">${esc(novel.title)}</div>
               <div class="text-xs text-indigo-400 font-medium mt-0.5">Chapter ${prog.chapterNumber} &bull; ${prog.scrollPct || 0}%</div>
@@ -331,9 +350,9 @@ function renderHome() {
             </div>
             <div class="flex items-center justify-between">
               <div class="flex -space-x-3">
-                ${matches.slice(0, 3).map(m => `<img src="${esc(m.cover)}" class="w-10 h-14 rounded-md object-cover border-2 border-[var(--bg-card)] shadow" />`).join('')}
+                ${matches.slice(0, 3).map(m => `<img src="${esc(m.cover)}" alt="${esc(m.title)}" data-fb-title="${esc(m.title)}" data-fb-author="${esc(m.author)}" data-fb-genre="${esc(m.genre)}" onerror="coverFallback(this,this.dataset.fbTitle,this.dataset.fbAuthor,this.dataset.fbGenre)" class="w-10 h-14 rounded-md object-cover border-2 border-[var(--bg-card)] shadow" loading="lazy" />`).join('')}
               </div>
-              <button onclick="goBrowseGenre('${esc(col.genres[0])}')" class="px-3 py-1.5 rounded-lg bg-indigo-500/15 text-indigo-400 text-xs font-bold hover:bg-indigo-600 hover:text-white transition">Explore ${matches.length} Titles</button>
+              <button data-action="browse-genre" data-genre="${esc(col.genres[0])}" class="px-3 py-1.5 rounded-lg bg-indigo-500/15 text-indigo-400 text-xs font-bold hover:bg-indigo-600 hover:text-white transition">Explore ${matches.length} Titles</button>
             </div>
           </div>`;
         }).join('')}
@@ -350,7 +369,7 @@ function renderHome() {
         ${latest.map(n => `
           <div class="p-3.5 sm:px-5 flex items-center justify-between gap-4 hover:bg-[var(--bg-hover)] transition">
             <a href="#novel/${encodeURIComponent(n.slug)}" class="flex items-center gap-3.5 min-w-0 flex-1">
-              <img src="${esc(n.cover)}" class="w-10 h-14 rounded-lg object-cover shrink-0" />
+              <img src="${esc(n.cover)}" alt="${esc(n.title)}" data-fb-title="${esc(n.title)}" data-fb-author="${esc(n.author)}" data-fb-genre="${esc(n.genre)}" onerror="coverFallback(this,this.dataset.fbTitle,this.dataset.fbAuthor,this.dataset.fbGenre)" class="w-10 h-14 rounded-lg object-cover shrink-0" loading="lazy" />
               <div class="min-w-0">
                 <div class="font-bold text-sm truncate hover:text-indigo-400">${esc(n.title)}</div>
                 <div class="text-xs text-muted truncate mt-0.5">${esc(n.latestChapterTitle || ('Chapter ' + n.chapterCount))}</div>
@@ -409,11 +428,11 @@ function renderHeroSlide(n, total, idx) {
   return `
   <div class="relative p-6 sm:p-10 flex flex-col md:flex-row items-center gap-8 overflow-hidden">
     <div class="absolute inset-0 opacity-20 blur-3xl pointer-events-none" style="background: radial-gradient(circle at 20% 50%, #6366f1, transparent 60%), radial-gradient(circle at 80% 30%, #f59e0b, transparent 60%);"></div>
-    <img src="${esc(n.cover)}" alt="${esc(n.title)}" fetchpriority="high" class="relative w-40 sm:w-48 aspect-[2/3] rounded-2xl object-cover shadow-2xl border border-white/15 shrink-0" />
+    <img src="${esc(n.cover)}" alt="${esc(n.title)}" fetchpriority="high" data-fb-title="${esc(n.title)}" data-fb-author="${esc(n.author)}" data-fb-genre="${esc(n.genre)}" onerror="coverFallback(this,this.dataset.fbTitle,this.dataset.fbAuthor,this.dataset.fbGenre)" class="relative w-40 sm:w-48 aspect-[2/3] rounded-2xl object-cover shadow-2xl border border-white/15 shrink-0" />
     <div class="relative flex-1 text-center md:text-left space-y-3">
       <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
-        <span class="px-3 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">FEATURED SPOTLIGHT</span>
-        <span class="px-3 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300">${esc(n.genre)}</span>
+        <span class="px-3 py-0.5 rounded-full text-xs font-bold badge-amber border">FEATURED SPOTLIGHT</span>
+        <span class="px-3 py-0.5 rounded-full text-xs font-semibold badge-indigo border">${esc(n.genre)}</span>
         <span class="text-xs text-muted flex items-center gap-1"><i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i> ${Number(n.rating || 4.8).toFixed(1)}</span>
       </div>
       <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">${esc(n.title)}</h1>
@@ -457,14 +476,10 @@ function goBrowseTag(t) {
 }
 
 // ------------------------- BROWSE & ADVANCED SEARCH -------------------------
-function renderBrowse() {
-  const root = document.getElementById('app-root');
-  const b = AppState.browse;
-  const genres = ['All', ...allGenres()];
-  const tagQ = (b.tagQuery || '').trim().toLowerCase();
-  const matchedTags = allTags().filter(t => !tagQ || t.toLowerCase().includes(tagQ));
-  const tags = matchedTags.slice(0, 36);
+let _browseTimer = null;
 
+function getFilteredBrowseNovels() {
+  const b = AppState.browse;
   let filtered = InkStore.catalog.filter(n => {
     if (b.genre !== 'All' && n.genre !== b.genre) return false;
     if (b.status !== 'All' && n.status !== b.status) return false;
@@ -486,13 +501,76 @@ function renderBrowse() {
   else if (b.sort === 'updated') filtered.sort((a, b2) => (b2.updatedAt || '').localeCompare(a.updatedAt || ''));
   else if (b.sort === 'chapters') filtered.sort((a, b2) => (b2.chapterCount || 0) - (a.chapterCount || 0));
   else if (b.sort === 'words') filtered.sort((a, b2) => (b2.totalWords || 0) - (a.totalWords || 0));
+  return filtered;
+}
 
-  const perPage = b.perPage || 16;
-  const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
-  const curPage = Math.min(Math.max(1, b.page || 1), totalPages);
-  b.page = curPage;
-  const startIdx = (curPage - 1) * perPage;
-  const paged = filtered.slice(startIdx, startIdx + perPage);
+function renderBrowseTagsPanel() {
+  const b = AppState.browse;
+  const tagQ = (b.tagQuery || '').trim().toLowerCase();
+  const matchedTags = allTags().filter(t => !tagQ || t.toLowerCase().includes(tagQ));
+  const tags = matchedTags.slice(0, 36);
+  const countEl = document.getElementById('browse-tags-count');
+  if (countEl) countEl.textContent = `Search & Filter by Tags (${matchedTags.length} available):`;
+  const listEl = document.getElementById('browse-tags-list');
+  if (!listEl) return;
+  listEl.innerHTML = `
+    ${tags.map(t => {
+      const isInc = b.includeTags.includes(t);
+      const isExc = b.excludeTags.includes(t);
+      const cls = isInc ? 'badge-emerald'
+        : isExc ? 'badge-rose line-through'
+        : 'surface-subtle text-muted hover:text-[var(--text-primary)]';
+      return `<button data-action="cycle-tag" data-tag="${esc(t)}" class="px-2.5 py-1 rounded-lg text-xs font-medium border transition ${cls}">${isInc ? '+ ' : isExc ? '− ' : ''}${esc(t)}</button>`;
+    }).join('')}
+    ${(b.includeTags.length || b.excludeTags.length || b.query || b.tagQuery || b.genre !== 'All' || b.status !== 'All' || Number(b.minChapters) > 0) ? `
+      <button onclick="resetBrowseFilters()" class="ml-auto px-3 py-1 rounded-lg text-xs font-bold text-rose-400 hover:bg-rose-500/10">Reset All</button>
+    ` : ''}
+  `;
+}
+
+function renderBrowseResults() {
+  const b = AppState.browse;
+  const filtered = getFilteredBrowseNovels();
+  const visibleCount = b.visibleCount || 24;
+  const visible = filtered.slice(0, visibleCount);
+  const remaining = Math.max(0, filtered.length - visible.length);
+
+  const countEl = document.getElementById('browse-count');
+  if (countEl) {
+    countEl.textContent = filtered.length
+      ? `Showing ${visible.length} of ${filtered.length} novels`
+      : '0 novels found';
+  }
+
+  const resEl = document.getElementById('browse-results');
+  if (!resEl) return;
+  resEl.innerHTML = visible.length ? `
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+      ${visible.map(n => renderNovelCard(n)).join('')}
+    </div>
+    ${remaining > 0 ? `
+      <div class="flex justify-center pt-6">
+        <button onclick="loadMoreBrowse()" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold shadow-lg transition">
+          Load More (${remaining} remaining)
+        </button>
+      </div>
+    ` : ''}
+  ` : `
+    <div class="surface-card rounded-2xl p-12 text-center space-y-3">
+      <i data-lucide="search-x" class="w-10 h-10 text-muted mx-auto"></i>
+      <div class="font-bold text-lg">No matching novels found</div>
+      <p class="text-sm text-muted">Try removing an excluded tag or clearing your search query.</p>
+      <button onclick="resetBrowseFilters()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-semibold">Reset Filters</button>
+    </div>
+  `;
+  refreshIcons();
+}
+
+function renderBrowse() {
+  const root = document.getElementById('app-root');
+  const b = AppState.browse;
+  const genres = ['All', ...allGenres()];
+  if (!b.visibleCount) b.visibleCount = 24;
 
   root.innerHTML = `
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6 fade-in">
@@ -501,25 +579,23 @@ function renderBrowse() {
         <h1 class="text-2xl sm:text-3xl font-extrabold">Browse & Advanced Search</h1>
         <p class="text-sm text-muted mt-1">Search by title, author, genre, or tags. Click a tag once to <span class="text-emerald-400 font-semibold">Include</span>, twice to <span class="text-rose-400 font-semibold">Exclude</span>, third click resets.</p>
       </div>
-      <div class="text-sm font-semibold text-indigo-400">
-        ${filtered.length ? `Showing ${startIdx + 1}–${Math.min(startIdx + perPage, filtered.length)} of ${filtered.length} novels` : '0 novels found'}
-      </div>
+      <div id="browse-count" class="text-sm font-semibold text-indigo-400"></div>
     </div>
 
     <!-- Filter Panel -->
     <div class="surface-card rounded-2xl p-5 space-y-4">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
-        <input id="browse-q" value="${esc(b.query)}" oninput="updateBrowse('query', this.value)" placeholder="Search title, author, synopsis..." class="lg:col-span-2 px-3.5 py-2 rounded-xl surface-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-        <select onchange="updateBrowse('genre', this.value)" class="px-3 py-2 rounded-xl surface-subtle text-sm">
+        <input id="browse-q" value="${esc(b.query)}" oninput="debouncedBrowse('query', this.value)" placeholder="Search title, author, synopsis..." class="lg:col-span-2 px-3.5 py-2 rounded-xl surface-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        <select id="browse-genre" onchange="updateBrowse('genre', this.value)" class="px-3 py-2 rounded-xl surface-subtle text-sm">
           ${genres.map(g => `<option value="${esc(g)}" ${b.genre === g ? 'selected' : ''}>Genre: ${esc(g)}</option>`).join('')}
         </select>
-        <select onchange="updateBrowse('minChapters', Number(this.value))" class="px-3 py-2 rounded-xl surface-subtle text-sm">
+        <select id="browse-minch" onchange="updateBrowse('minChapters', Number(this.value))" class="px-3 py-2 rounded-xl surface-subtle text-sm">
           ${[0, 10, 30, 50, 100].map(m => `<option value="${m}" ${Number(b.minChapters) === m ? 'selected' : ''}>${m === 0 ? 'Chapters: Any' : `Chapters: ${m}+`}</option>`).join('')}
         </select>
-        <select onchange="updateBrowse('status', this.value)" class="px-3 py-2 rounded-xl surface-subtle text-sm">
+        <select id="browse-status" onchange="updateBrowse('status', this.value)" class="px-3 py-2 rounded-xl surface-subtle text-sm">
           ${['All', 'Ongoing', 'Completed', 'Hiatus'].map(s => `<option value="${s}" ${b.status === s ? 'selected' : ''}>Status: ${s}</option>`).join('')}
         </select>
-        <select onchange="updateBrowse('sort', this.value)" class="px-3 py-2 rounded-xl surface-subtle text-sm">
+        <select id="browse-sort" onchange="updateBrowse('sort', this.value)" class="px-3 py-2 rounded-xl surface-subtle text-sm">
           <option value="trending" ${b.sort === 'trending' ? 'selected' : ''}>Sort: Trending</option>
           <option value="rating" ${b.sort === 'rating' ? 'selected' : ''}>Sort: Highest Rated</option>
           <option value="updated" ${b.sort === 'updated' ? 'selected' : ''}>Sort: Recently Updated</option>
@@ -531,64 +607,41 @@ function renderBrowse() {
       <!-- Search by Tags + Tri-state Tag Filter -->
       <div class="space-y-2.5 pt-1 border-t border-subtle">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2">
-          <span class="text-xs font-bold text-muted uppercase tracking-wider">Search & Filter by Tags (${matchedTags.length} available):</span>
-          <input id="browse-tag-q" value="${esc(b.tagQuery || '')}" oninput="updateBrowse('tagQuery', this.value)" placeholder="Search tags (e.g. transmigration, magic, romance)..." class="sm:w-72 px-3 py-1.5 rounded-lg surface-subtle text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <span id="browse-tags-count" class="text-xs font-bold text-muted uppercase tracking-wider"></span>
+          <input id="browse-tag-q" value="${esc(b.tagQuery || '')}" oninput="debouncedBrowse('tagQuery', this.value)" placeholder="Search tags (e.g. transmigration, magic, romance)..." class="sm:w-72 px-3 py-1.5 rounded-lg surface-subtle text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
-        <div class="flex flex-wrap items-center gap-2">
-          ${tags.map(t => {
-            const isInc = b.includeTags.includes(t);
-            const isExc = b.excludeTags.includes(t);
-            const cls = isInc ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'
-              : isExc ? 'bg-rose-500/20 text-rose-300 border-rose-500/50 line-through'
-              : 'surface-subtle text-muted hover:text-[var(--text-primary)]';
-            return `<button onclick="cycleTagFilter('${esc(t)}')" class="px-2.5 py-1 rounded-lg text-xs font-medium border transition ${cls}">${isInc ? '+ ' : isExc ? '− ' : ''}${esc(t)}</button>`;
-          }).join('')}
-          ${(b.includeTags.length || b.excludeTags.length || b.query || b.tagQuery || b.genre !== 'All' || b.status !== 'All' || Number(b.minChapters) > 0) ? `
-            <button onclick="resetBrowseFilters()" class="ml-auto px-3 py-1 rounded-lg text-xs font-bold text-rose-400 hover:bg-rose-500/10">Reset All</button>
-          ` : ''}
-        </div>
+        <div id="browse-tags-list" class="flex flex-wrap items-center gap-2"></div>
       </div>
     </div>
 
     <!-- Results Grid -->
-    ${paged.length ? `
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-        ${paged.map(n => renderNovelCard(n)).join('')}
-      </div>
-      ${totalPages > 1 ? `
-      <div class="flex flex-wrap items-center justify-center gap-2 pt-4">
-        <button onclick="setBrowsePage(${curPage - 1})" ${curPage <= 1 ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl surface-card text-xs font-semibold disabled:opacity-40 hover:border-indigo-500/60 transition">&larr; Prev</button>
-        ${Array.from({ length: totalPages }).map((_, idx) => {
-          const p = idx + 1;
-          return `<button onclick="setBrowsePage(${p})" class="px-3.5 py-2 rounded-xl text-xs font-bold transition ${p === curPage ? 'bg-indigo-600 text-white shadow' : 'surface-card hover:border-indigo-500/60'}">${p}</button>`;
-        }).join('')}
-        <button onclick="setBrowsePage(${curPage + 1})" ${curPage >= totalPages ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl surface-card text-xs font-semibold disabled:opacity-40 hover:border-indigo-500/60 transition">Next &rarr;</button>
-      </div>` : ''}
-    ` : `
-      <div class="surface-card rounded-2xl p-12 text-center space-y-3">
-        <i data-lucide="search-x" class="w-10 h-10 text-muted mx-auto"></i>
-        <div class="font-bold text-lg">No matching novels found</div>
-        <p class="text-sm text-muted">Try removing an excluded tag or clearing your search query.</p>
-        <button onclick="resetBrowseFilters()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-semibold">Reset Filters</button>
-      </div>
-    `}
+    <div id="browse-results"></div>
   </div>`;
+
+  renderBrowseTagsPanel();
+  renderBrowseResults();
 }
 
-function setBrowsePage(p) {
-  AppState.browse.page = p;
-  renderBrowse();
-  refreshIcons();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function loadMoreBrowse() {
+  AppState.browse.visibleCount = (AppState.browse.visibleCount || 24) + 24;
+  renderBrowseResults();
+}
+
+function debouncedBrowse(key, val) {
+  AppState.browse[key] = val;
+  AppState.browse.visibleCount = 24;
+  clearTimeout(_browseTimer);
+  _browseTimer = setTimeout(() => {
+    if (key === 'tagQuery') renderBrowseTagsPanel();
+    renderBrowseResults();
+  }, 150);
 }
 
 function updateBrowse(key, val) {
   AppState.browse[key] = val;
-  AppState.browse.page = 1;
-  renderBrowse();
-  refreshIcons();
-  if (key === 'query') document.getElementById('browse-q')?.focus();
-  if (key === 'tagQuery') document.getElementById('browse-tag-q')?.focus();
+  AppState.browse.visibleCount = 24;
+  renderBrowseTagsPanel();
+  renderBrowseResults();
 }
 
 function cycleTagFilter(tag) {
@@ -601,13 +654,13 @@ function cycleTagFilter(tag) {
   } else {
     b.includeTags.push(tag);
   }
-  b.page = 1;
-  renderBrowse();
-  refreshIcons();
+  b.visibleCount = 24;
+  renderBrowseTagsPanel();
+  renderBrowseResults();
 }
 
 function resetBrowseFilters() {
-  AppState.browse = { query: '', tagQuery: '', genre: 'All', status: 'All', rating: 'All', minChapters: 0, includeTags: [], excludeTags: [], sort: 'trending', page: 1, perPage: 16 };
+  AppState.browse = { query: '', tagQuery: '', genre: 'All', status: 'All', rating: 'All', minChapters: 0, includeTags: [], excludeTags: [], sort: 'trending', page: 1, perPage: 24, visibleCount: 24 };
   renderBrowse();
   refreshIcons();
 }
@@ -641,7 +694,7 @@ function renderRankings() {
         <h1 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2"><i data-lucide="trophy" class="w-7 h-7 text-amber-400"></i> Top Charts & Rankings</h1>
         <p class="text-sm text-muted mt-1">Live leaderboards ranked by reader votes, ratings, and views.</p>
       </div>
-      <select onchange="AppState.rankingsGenre=this.value;renderRankings();refreshIcons();" class="px-3.5 py-2 rounded-xl surface-card text-sm">
+      <select onchange="AppState.rankingsGenre=this.value;AppState.rankingsLimit=24;renderRankings();refreshIcons();" class="px-3.5 py-2 rounded-xl surface-card text-sm">
         <option value="All">All Genres</option>
         ${allGenres().map(g => `<option value="${esc(g)}" ${AppState.rankingsGenre === g ? 'selected' : ''}>${esc(g)}</option>`).join('')}
       </select>
@@ -649,7 +702,7 @@ function renderRankings() {
 
     <div class="flex flex-wrap gap-2">
       ${tabs.map(t => `
-        <button onclick="AppState.rankingsTab='${t.id}';renderRankings();refreshIcons();"
+        <button onclick="AppState.rankingsTab='${t.id}';AppState.rankingsLimit=24;renderRankings();refreshIcons();"
           class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition ${AppState.rankingsTab === t.id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25' : 'surface-card hover:border-indigo-500/50'}">
           <i data-lucide="${t.icon}" class="w-4 h-4"></i> ${t.label}
         </button>
@@ -657,7 +710,7 @@ function renderRankings() {
     </div>
 
     <div class="space-y-3">
-      ${list.map((n, i) => {
+      ${list.slice(0, AppState.rankingsLimit || 24).map((n, i) => {
         const medal = i === 0 ? 'bg-amber-400 text-slate-950' : i === 1 ? 'bg-slate-300 text-slate-950' : i === 2 ? 'bg-amber-700 text-white' : 'surface-subtle text-muted';
         const votes = (n.powerStones || 0) + InkStore.getVotes(n.slug);
         return `
@@ -665,7 +718,7 @@ function renderRankings() {
           <div class="flex items-center gap-4 flex-1 min-w-0">
             <div class="w-10 h-10 rounded-xl font-black text-lg flex items-center justify-center shrink-0 ${medal}">#${i + 1}</div>
             <a href="#novel/${encodeURIComponent(n.slug)}" class="shrink-0">
-              <img src="${esc(n.cover)}" class="w-14 h-20 rounded-xl object-cover shadow" />
+              <img src="${esc(n.cover)}" alt="${esc(n.title)}" data-fb-title="${esc(n.title)}" data-fb-author="${esc(n.author)}" data-fb-genre="${esc(n.genre)}" onerror="coverFallback(this,this.dataset.fbTitle,this.dataset.fbAuthor,this.dataset.fbGenre)" class="w-14 h-20 rounded-xl object-cover shadow" loading="lazy" />
             </a>
             <div class="min-w-0 flex-1">
               <a href="#novel/${encodeURIComponent(n.slug)}" class="font-extrabold text-base hover:text-indigo-400 transition block truncate">${esc(n.title)}</a>
@@ -684,6 +737,13 @@ function renderRankings() {
         </div>`;
       }).join('')}
     </div>
+    ${list.length > (AppState.rankingsLimit || 24) ? `
+      <div class="flex justify-center pt-4">
+        <button onclick="AppState.rankingsLimit=(AppState.rankingsLimit||24)+24;renderRankings();refreshIcons();" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold shadow-lg transition">
+          Load More (${list.length - (AppState.rankingsLimit || 24)} remaining)
+        </button>
+      </div>
+    ` : ''}
   </div>`;
 }
 
@@ -730,16 +790,21 @@ async function renderNovelDetail(slug) {
       <div class="absolute inset-0 opacity-20 blur-3xl pointer-events-none" style="background: radial-gradient(circle at 25% 40%, #6366f1, transparent 55%), radial-gradient(circle at 80% 50%, #ec4899, transparent 55%);"></div>
       <div class="relative max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 flex flex-col md:flex-row gap-8">
         <div class="mx-auto md:mx-0 shrink-0">
-          <img src="${esc(novel.cover || InkImporter.generateCoverDataUrl(novel.title, novel.author, novel.genre))}" class="w-48 sm:w-56 aspect-[2/3] rounded-2xl object-cover shadow-2xl border border-white/15" />
+          <img src="${esc(novel.cover || InkImporter.generateCoverDataUrl(novel.title, novel.author, novel.genre))}" alt="${esc(novel.title)}" data-fb-title="${esc(novel.title)}" data-fb-author="${esc(novel.author)}" data-fb-genre="${esc(novel.genre)}" onerror="coverFallback(this,this.dataset.fbTitle,this.dataset.fbAuthor,this.dataset.fbGenre)" class="w-48 sm:w-56 aspect-[2/3] rounded-2xl object-cover shadow-2xl border border-white/15" />
         </div>
         <div class="flex-1 space-y-4">
           <div class="flex flex-wrap items-center gap-2 text-xs">
-            <span class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 font-bold">${esc(novel.genre)}</span>
+            <span class="px-2.5 py-1 rounded-lg badge-indigo border font-bold">${esc(novel.genre)}</span>
             <span class="px-2.5 py-1 rounded-lg surface-card font-semibold">${esc(novel.status)}</span>
             <span class="px-2.5 py-1 rounded-lg surface-card text-muted">${esc(novel.contentRating || 'Teen')}</span>
           </div>
           <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">${esc(novel.title)}</h1>
           <div class="text-sm text-muted">Author: <span class="font-bold text-[var(--text-primary)]">${esc(novel.author)}</span> &bull; Updated ${esc(novel.updatedAt)}</div>
+          ${novel.source ? `
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <span class="px-2.5 py-1 rounded-lg badge-emerald border font-semibold">Public Domain &bull; Source: ${esc(novel.source)}</span>
+            ${novel.sourceUrl ? `<a href="${esc(novel.sourceUrl)}" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:underline font-semibold">View Original Source &rarr;</a>` : ''}
+          </div>` : ''}
 
           <!-- Stats Row -->
           <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-1">
@@ -754,7 +819,7 @@ async function renderNovelDetail(slug) {
 
           <!-- Tags -->
           <div class="flex flex-wrap gap-1.5">
-            ${(novel.tags || []).map(t => `<button onclick="goBrowseTag('${esc(t)}')" class="px-2.5 py-1 rounded-lg surface-card text-xs hover:text-indigo-400 transition">#${esc(t)}</button>`).join('')}
+            ${(novel.tags || []).map(t => `<button data-action="browse-tag" data-tag="${esc(t)}" class="px-2.5 py-1 rounded-lg surface-card text-xs hover:text-indigo-400 transition">#${esc(t)}</button>`).join('')}
           </div>
 
           <!-- Action Buttons -->
@@ -769,7 +834,7 @@ async function renderNovelDetail(slug) {
               ${shelves.map(s => `<option value="${s}" ${shelf === s ? 'selected' : ''}>Shelf: ${s}</option>`).join('')}
             </select>
 
-            <button onclick="voteNovel('${esc(slug)}')" class="px-4 py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 font-bold text-sm flex items-center gap-1.5 transition">
+            <button onclick="voteNovel('${esc(slug)}')" class="px-4 py-2.5 rounded-xl badge-amber hover:opacity-90 border font-bold text-sm flex items-center gap-1.5 transition">
               <i data-lucide="flame" class="w-4 h-4"></i> Vote Stone
             </button>
 
@@ -813,7 +878,8 @@ async function renderNovelDetail(slug) {
   refreshIcons();
 }
 
-function renderTocTab(novel, prog) {
+let _tocTimer = null;
+function buildTocGroupedHtml(novel, prog) {
   const readSet = new Set(prog?.readChapters || []);
   let list = [...(novel.chapters || [])];
   if (AppState.tocQuery) {
@@ -822,7 +888,6 @@ function renderTocTab(novel, prog) {
   }
   if (!AppState.tocSortAsc) list.reverse();
 
-  // Group by volume
   const grouped = {};
   list.forEach(c => {
     const v = c.volume || 'Volume 1';
@@ -830,42 +895,60 @@ function renderTocTab(novel, prog) {
     grouped[v].push(c);
   });
 
+  return Object.entries(grouped).map(([vol, chs]) => `
+    <div class="surface-card rounded-2xl overflow-hidden">
+      <div class="px-5 py-3 bg-indigo-500/10 border-b border-subtle font-bold text-sm text-accent flex justify-between">
+        <span>${esc(vol)}</span>
+        <span class="text-xs text-muted">${chs.length} Chapters</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:gap-px bg-[var(--border-color)]">
+        ${chs.map(c => {
+          const isRead = readSet.has(c.number);
+          return `
+          <a href="#read/${encodeURIComponent(novel.slug)}/${c.number}" class="bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] p-3.5 px-5 flex items-center justify-between gap-3 transition">
+            <div class="min-w-0 flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 ${isRead ? 'bg-emerald-500/20 text-emerald-400' : 'surface-subtle text-muted'}">
+                ${isRead ? '✓' : c.number}
+              </span>
+              <div class="min-w-0">
+                <div class="text-sm font-semibold truncate ${isRead ? 'text-muted' : ''}">${esc(c.title)}</div>
+                <div class="text-[11px] text-muted">${c.wordCount || 0} words &bull; ~${c.readMinutes || 1} min &bull; ${esc(c.publishedAt || '')}</div>
+              </div>
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-muted shrink-0"></i>
+          </a>`;
+        }).join('')}
+      </div>
+    </div>
+  `).join('') || '<div class="p-8 text-center text-muted surface-card rounded-2xl">No chapters match your search.</div>';
+}
+
+async function debouncedTocFilter(slug, val) {
+  AppState.tocQuery = val;
+  clearTimeout(_tocTimer);
+  _tocTimer = setTimeout(async () => {
+    const box = document.getElementById('toc-list-container');
+    if (!box) return;
+    const novel = await InkStore.getNovel(slug);
+    if (!novel) return;
+    box.innerHTML = buildTocGroupedHtml(novel, InkStore.getProgress(slug));
+    refreshIcons();
+  }, 150);
+}
+
+function renderTocTab(novel, prog) {
   return `
   <div class="space-y-4">
     <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-      <input value="${esc(AppState.tocQuery)}" oninput="AppState.tocQuery=this.value;renderNovelDetail('${esc(novel.slug)}')"
+      <input id="toc-filter-input" value="${esc(AppState.tocQuery)}" oninput="debouncedTocFilter('${esc(novel.slug)}', this.value)"
         placeholder="Filter chapters by title or number..." class="px-3.5 py-2 rounded-xl surface-card text-sm sm:w-80 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
       <button onclick="AppState.tocSortAsc=!AppState.tocSortAsc;renderNovelDetail('${esc(novel.slug)}')" class="px-4 py-2 rounded-xl surface-card text-xs font-bold flex items-center justify-center gap-2 hover:border-indigo-500/50">
         <i data-lucide="arrow-up-down" class="w-4 h-4"></i> Order: ${AppState.tocSortAsc ? 'Oldest First' : 'Newest First'}
       </button>
     </div>
-
-    ${Object.entries(grouped).map(([vol, chs]) => `
-      <div class="surface-card rounded-2xl overflow-hidden">
-        <div class="px-5 py-3 bg-indigo-500/10 border-b border-subtle font-bold text-sm text-indigo-300 flex justify-between">
-          <span>${esc(vol)}</span>
-          <span class="text-xs text-muted">${chs.length} Chapters</span>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:gap-px bg-[var(--border-color)]">
-          ${chs.map(c => {
-            const isRead = readSet.has(c.number);
-            return `
-            <a href="#read/${encodeURIComponent(novel.slug)}/${c.number}" class="bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] p-3.5 px-5 flex items-center justify-between gap-3 transition">
-              <div class="min-w-0 flex items-center gap-2.5">
-                <span class="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 ${isRead ? 'bg-emerald-500/20 text-emerald-400' : 'surface-subtle text-muted'}">
-                  ${isRead ? '✓' : c.number}
-                </span>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold truncate ${isRead ? 'text-muted' : ''}">${esc(c.title)}</div>
-                  <div class="text-[11px] text-muted">${c.wordCount || 0} words &bull; ~${c.readMinutes || 1} min &bull; ${esc(c.publishedAt || '')}</div>
-                </div>
-              </div>
-              <i data-lucide="chevron-right" class="w-4 h-4 text-muted shrink-0"></i>
-            </a>`;
-          }).join('')}
-        </div>
-      </div>
-    `).join('') || '<div class="p-8 text-center text-muted surface-card rounded-2xl">No chapters match your search.</div>'}
+    <div id="toc-list-container" class="space-y-4">
+      ${buildTocGroupedHtml(novel, prog)}
+    </div>
   </div>`;
 }
 
@@ -879,8 +962,8 @@ function renderCodexTab(novel) {
     ${items.map(g => `
       <div class="surface-card rounded-2xl p-5 space-y-1.5">
         <div class="flex items-center justify-between">
-          <h4 class="font-bold text-base text-indigo-300">${esc(g.term)}</h4>
-          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-500/15 text-indigo-300">${esc(g.category || 'Lore')}</span>
+          <h4 class="font-bold text-base text-accent">${esc(g.term)}</h4>
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold badge-indigo border">${esc(g.category || 'Lore')}</span>
         </div>
         <p class="text-sm text-muted leading-relaxed">${esc(g.desc)}</p>
       </div>
@@ -929,7 +1012,7 @@ function renderReviewsTab(novel, reviews, sub) {
         <div class="surface-card rounded-2xl p-5 space-y-2">
           <div class="flex items-center justify-between">
             <div class="font-bold text-sm flex items-center gap-2">
-              <span class="w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-xs">${esc((r.user || 'R')[0].toUpperCase())}</span>
+              <span class="w-7 h-7 rounded-full badge-indigo border flex items-center justify-center text-xs">${esc((r.user || 'R')[0].toUpperCase())}</span>
               ${esc(r.user || 'Reader')}
             </div>
             <div class="text-xs text-amber-400 font-bold">${'★'.repeat(r.rating || 5)} <span class="text-muted font-normal ml-2">${esc(r.date || '')}</span></div>
@@ -1015,8 +1098,12 @@ async function renderReader(slug, chapterNumber) {
   AppState.reader.novel = novel;
   AppState.reader.chapterIdx = chIdx;
 
-  // Record progress
-  InkStore.saveProgress(slug, ch.number, 0, ch.wordCount || 0);
+  // Read existing progress BEFORE saving so we can resume scrollPct on the same chapter
+  const existingProg = InkStore.getProgress(slug);
+  const resumeScrollPct = (existingProg && Number(existingProg.chapterNumber) === Number(ch.number))
+    ? (existingProg.scrollPct || 0)
+    : 0;
+  InkStore.saveProgress(slug, ch.number, resumeScrollPct, ch.wordCount || 0);
 
   const s = InkStore.getSettings();
   const prevCh = novel.chapters[chIdx - 1];
@@ -1159,14 +1246,38 @@ async function renderReader(slug, chapterNumber) {
     </article>
   </div>`;
 
-  // Track scroll progress
+  // Restore saved scroll position if returning to same chapter
+  if (resumeScrollPct > 0) {
+    requestAnimationFrame(() => {
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      if (docH > 0) window.scrollTo(0, Math.round((resumeScrollPct / 100) * docH));
+      const bar = document.getElementById('read-progress-bar');
+      if (bar) bar.style.width = resumeScrollPct + '%';
+    });
+  } else {
+    window.scrollTo(0, 0);
+  }
+
+  // Track scroll progress (throttled localStorage writes every 800ms)
+  let _lastSaveTs = 0;
+  let _scrollSaveTimer = null;
   window.onscroll = () => {
     if (AppState.route !== 'read') return;
     const docH = document.documentElement.scrollHeight - window.innerHeight;
     const pct = docH > 0 ? Math.min(100, Math.round((window.scrollY / docH) * 100)) : 100;
     const bar = document.getElementById('read-progress-bar');
     if (bar) bar.style.width = pct + '%';
-    InkStore.saveProgress(slug, ch.number, pct, 0);
+    const now = Date.now();
+    if (now - _lastSaveTs >= 800) {
+      _lastSaveTs = now;
+      InkStore.saveProgress(slug, ch.number, pct, 0);
+    } else {
+      clearTimeout(_scrollSaveTimer);
+      _scrollSaveTimer = setTimeout(() => {
+        _lastSaveTs = Date.now();
+        if (AppState.route === 'read') InkStore.saveProgress(slug, ch.number, pct, 0);
+      }, 800);
+    }
   };
   refreshIcons();
 }
@@ -1242,7 +1353,7 @@ function openChapterDrawer() {
       </div>
       <div class="max-h-96 overflow-y-auto divide-y divide-[var(--border-color)] rounded-xl border border-subtle">
         ${novel.chapters.map((c, i) => `
-          <a href="#read/${encodeURIComponent(novel.slug)}/${c.number}" onclick="closeModal()" class="p-3 flex items-center justify-between text-sm hover:bg-indigo-500/15 ${i === chapterIdx ? 'bg-indigo-500/20 font-bold text-indigo-300' : ''}">
+          <a href="#read/${encodeURIComponent(novel.slug)}/${c.number}" onclick="closeModal()" class="p-3 flex items-center justify-between text-sm hover:bg-indigo-500/15 ${i === chapterIdx ? 'bg-indigo-500/20 font-bold text-accent' : ''}">
             <span class="truncate">${esc(c.title)}</span>
             <span class="text-xs text-muted shrink-0 ml-2">#${c.number}</span>
           </a>
@@ -1483,8 +1594,38 @@ function renderLibrary() {
 }
 
 // ------------------------- AUTHOR STUDIO & ZERO-ANTIGRAVITY PUBLISHER -------------------------
+function unlockStudioPin(e) {
+  e.preventDefault();
+  const input = document.getElementById('studio-pin-input')?.value || '';
+  const expected = String(InkStore.config.adminPin || '1234');
+  if (input === expected) {
+    AppState.studioUnlocked = true;
+    sessionStorage.setItem('quillspire_studio_unlocked', '1');
+    renderStudio();
+  } else {
+    toast('Incorrect Admin PIN.', 'error');
+  }
+}
+
 function renderStudio() {
   const root = document.getElementById('app-root');
+  if (!AppState.studioUnlocked) {
+    root.innerHTML = `
+    <div class="max-w-md mx-auto px-4 py-16 fade-in">
+      <form onsubmit="unlockStudioPin(event)" class="surface-card rounded-2xl p-6 space-y-4 text-center">
+        <div class="w-12 h-12 rounded-2xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center mx-auto">
+          <i data-lucide="lock" class="w-6 h-6"></i>
+        </div>
+        <h1 class="text-xl font-extrabold">Author & Admin Studio</h1>
+        <p class="text-xs text-muted">Enter the Admin PIN from <code>config.json</code> to unlock publishing tools.</p>
+        <input id="studio-pin-input" type="password" autocomplete="current-password" placeholder="Enter Admin PIN..." required
+          class="w-full px-3.5 py-2.5 rounded-xl surface-subtle text-sm text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition">Unlock Studio</button>
+      </form>
+    </div>`;
+    refreshIcons();
+    return;
+  }
   const st = AppState.studio;
   const gh = InkStore.getGithubConfig();
 
@@ -1492,7 +1633,7 @@ function renderStudio() {
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6 fade-in">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-500/20 text-indigo-300 uppercase tracking-wider">Publisher Control Center</span>
+        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold badge-indigo border uppercase tracking-wider">Publisher Control Center</span>
         <h1 class="text-2xl sm:text-3xl font-extrabold mt-1">Author Studio & Auto-Publisher</h1>
         <p class="text-sm text-muted mt-1">Import entire novels (.TXT, .MD, .DOCX, .EPUB, .JSON, or chapter folders), edit chapters, and publish live with 1 click.</p>
       </div>
@@ -1735,7 +1876,7 @@ function renderStudioNovelsTab() {
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       ${InkStore.catalog.map(n => `
         <div class="surface-card rounded-2xl p-4 flex items-center gap-4">
-          <img src="${esc(n.cover)}" class="w-14 h-20 rounded-xl object-cover shrink-0" />
+          <img src="${esc(n.cover)}" alt="${esc(n.title)}" data-fb-title="${esc(n.title)}" data-fb-author="${esc(n.author)}" data-fb-genre="${esc(n.genre)}" onerror="coverFallback(this,this.dataset.fbTitle,this.dataset.fbAuthor,this.dataset.fbGenre)" class="w-14 h-20 rounded-xl object-cover shrink-0" loading="lazy" />
           <div class="min-w-0 flex-1">
             <div class="font-bold text-sm truncate">${esc(n.title)}</div>
             <div class="text-xs text-muted">${esc(n.author)} &bull; ${n.chapterCount} Ch &bull; ${fmtNum(n.totalWords)} words</div>

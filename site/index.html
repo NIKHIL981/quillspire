@@ -35,6 +35,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Quillspire" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='100%25' stop-color='%23f59e0b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M18 20c0-2 1.5-3.5 3.5-3.5H31v31H21.5c-2 0-3.5 1.5-3.5 3.5V20zm28 0c0-2-1.5-3.5-3.5-3.5H33v31h9.5c2 0 3.5 1.5 3.5 3.5V20z' fill='%23fff'/%3E%3C/svg%3E" />
   <link rel="manifest" href="manifest.json" />
 
   <!-- JSON-LD Structured Data (WebSite + Organization) -->
@@ -137,9 +138,6 @@
         <a href="#library" data-nav="library" class="nav-link px-3 py-2 rounded-lg hover:bg-indigo-500/10 transition flex items-center gap-1.5">
           <i data-lucide="bookmark" class="w-4 h-4"></i> Library
         </a>
-        <a href="#studio" data-nav="studio" class="nav-link px-3 py-2 rounded-lg hover:bg-indigo-500/10 transition flex items-center gap-1.5 text-indigo-400">
-          <i data-lucide="feather" class="w-4 h-4"></i> Studio & Publisher
-        </a>
       </nav>
 
       <!-- Quick Search + Actions -->
@@ -171,7 +169,6 @@
         <a href="#browse" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg surface-card flex items-center gap-2"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i> Browse</a>
         <a href="#rankings" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg surface-card flex items-center gap-2"><i data-lucide="trophy" class="w-4 h-4"></i> Rankings</a>
         <a href="#library" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-lg surface-card flex items-center gap-2"><i data-lucide="bookmark" class="w-4 h-4"></i> Library</a>
-        <a href="#studio" onclick="toggleMobileMenu()" class="col-span-2 px-3 py-2 rounded-lg bg-indigo-600 text-white flex items-center justify-center gap-2"><i data-lucide="feather" class="w-4 h-4"></i> Author Studio & Auto-Publisher</a>
       </div>
     </div>
   </header>
@@ -192,7 +189,7 @@
         <a href="#browse" class="hover:text-indigo-400">Advanced Search</a>
         <a href="#rankings" class="hover:text-indigo-400">Top Charts</a>
         <a href="#library" class="hover:text-indigo-400">My Library</a>
-        <a href="#studio" class="hover:text-indigo-400">Publisher Studio</a>
+        <a href="#studio" class="hover:text-indigo-400 opacity-75">Author / Admin</a>
         <button onclick="openShortcutsModal()" class="hover:text-indigo-400">Keyboard Shortcuts</button>
       </div>
     </div>
@@ -223,41 +220,41 @@
       <p>JavaScript is required for the full reading experience. Enable JS or visit individual novel pages below.</p>
       <h2>Browse Our 35 Novels</h2>
       <ul>
-        <li><a href="https://chaya.futureagentlab.com/novel/a-convenient-risk/" style="color:#a5b4fc">A Convenient Risk</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/breeze-spells-and-bridegrooms/" style="color:#a5b4fc">Breeze Spells and Bridegrooms</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/claiming-her-forever/" style="color:#a5b4fc">Claiming Her Forever</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/code-of-silence/" style="color:#a5b4fc">Code of Silence</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/dreams-for-stones/" style="color:#a5b4fc">Dreams for Stones</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/earth-wizard/" style="color:#a5b4fc">Earth Wizard</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/echoes-beneath-the-stone/" style="color:#a5b4fc">Echoes Beneath the Stone</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/echoes-rising/" style="color:#a5b4fc">Echoes Rising</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/evangeline/" style="color:#a5b4fc">Evangeline</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/grandfather-s-pigments/" style="color:#a5b4fc">Grandfather&#x27;s Pigments</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/guardians-of-the-deep/" style="color:#a5b4fc">Guardians of the deep</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/hope-in-cripple-creek/" style="color:#a5b4fc">Hope In Cripple Creek</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/knight-of-two-hearts/" style="color:#a5b4fc">Knight of TWO Hearts</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-asteroid-heist/" style="color:#a5b4fc">The Asteroid Heist</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-babbling-brook-naked-poker-club-book-1/" style="color:#a5b4fc">The Babbling Brook Naked Poker Club, Book 1</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-elephant-in-the-ivy/" style="color:#a5b4fc">The Elephant in the Ivy</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-first-breach/" style="color:#a5b4fc">The First Breach</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-first-forgetting/" style="color:#a5b4fc">The First Forgetting</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-last-honest-man/" style="color:#a5b4fc">The Last Honest Man</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-meaning-of-androsia/" style="color:#a5b4fc">The Meaning of Androsia</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-moment-we-met-was-a-lie-volume-1/" style="color:#a5b4fc">the moment we met was a lie - Volume 1</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-moment-we-met-was-a-lie-volume-2/" style="color:#a5b4fc">the moment we met was a lie - Volume 2</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-paladin-chronicles/" style="color:#a5b4fc">The Paladin Chronicles</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-quiet-defector/" style="color:#a5b4fc">The Quiet Defector</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-ranch-went-quiet/" style="color:#a5b4fc">The Ranch went Quiet</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-trojan-treasure-conspiracy/" style="color:#a5b4fc">The Trojan Treasure Conspiracy</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/this-time-she-stayed/" style="color:#a5b4fc">This Time She Stayed</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-tea-shop-at-worlds-edge/" style="color:#a5b4fc">The Tea Shop at World&#x27;s Edge</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/jade-sovereign-of-the-shattered-heavens/" style="color:#a5b4fc">Jade Sovereign of the Shattered Heavens</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/architect-of-the-infinite-dungeon/" style="color:#a5b4fc">Architect of the Infinite Dungeon</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/velvet-dagger-crown-of-ash/" style="color:#a5b4fc">Velvet Dagger, Crown of Ash</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/neon-requiem-2099/" style="color:#a5b4fc">Neon Requiem 2099</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/ember-born-academy/" style="color:#a5b4fc">Ember-Born Academy</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/the-thirteenth-witness/" style="color:#a5b4fc">The Thirteenth Witness</a></li>
-        <li><a href="https://chaya.futureagentlab.com/novel/chronicles-of-the-clockwork-archive/" style="color:#a5b4fc">Chronicles of the Clockwork Archive</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/a-convenient-risk/" style="color:#a5b4fc">A Convenient Risk</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/breeze-spells-and-bridegrooms/" style="color:#a5b4fc">Breeze Spells and Bridegrooms</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/claiming-her-forever/" style="color:#a5b4fc">Claiming Her Forever</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/code-of-silence/" style="color:#a5b4fc">Code of Silence</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/dreams-for-stones/" style="color:#a5b4fc">Dreams for Stones</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/earth-wizard/" style="color:#a5b4fc">Earth Wizard</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/echoes-beneath-the-stone/" style="color:#a5b4fc">Echoes Beneath the Stone</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/echoes-rising/" style="color:#a5b4fc">Echoes Rising</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/evangeline/" style="color:#a5b4fc">Evangeline</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/grandfather-s-pigments/" style="color:#a5b4fc">Grandfather&#x27;s Pigments</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/guardians-of-the-deep/" style="color:#a5b4fc">Guardians of the deep</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/hope-in-cripple-creek/" style="color:#a5b4fc">Hope In Cripple Creek</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/knight-of-two-hearts/" style="color:#a5b4fc">Knight of TWO Hearts</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-asteroid-heist/" style="color:#a5b4fc">The Asteroid Heist</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-babbling-brook-naked-poker-club-book-1/" style="color:#a5b4fc">The Babbling Brook Naked Poker Club, Book 1</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-elephant-in-the-ivy/" style="color:#a5b4fc">The Elephant in the Ivy</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-first-breach/" style="color:#a5b4fc">The First Breach</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-first-forgetting/" style="color:#a5b4fc">The First Forgetting</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-last-honest-man/" style="color:#a5b4fc">The Last Honest Man</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-meaning-of-androsia/" style="color:#a5b4fc">The Meaning of Androsia</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-moment-we-met-was-a-lie-volume-1/" style="color:#a5b4fc">the moment we met was a lie - Volume 1</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-moment-we-met-was-a-lie-volume-2/" style="color:#a5b4fc">the moment we met was a lie - Volume 2</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-paladin-chronicles/" style="color:#a5b4fc">The Paladin Chronicles</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-quiet-defector/" style="color:#a5b4fc">The Quiet Defector</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-ranch-went-quiet/" style="color:#a5b4fc">The Ranch went Quiet</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-trojan-treasure-conspiracy/" style="color:#a5b4fc">The Trojan Treasure Conspiracy</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/this-time-she-stayed/" style="color:#a5b4fc">This Time She Stayed</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-tea-shop-at-worlds-edge/" style="color:#a5b4fc">The Tea Shop at World&#x27;s Edge</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/jade-sovereign-of-the-shattered-heavens/" style="color:#a5b4fc">Jade Sovereign of the Shattered Heavens</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/architect-of-the-infinite-dungeon/" style="color:#a5b4fc">Architect of the Infinite Dungeon</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/velvet-dagger-crown-of-ash/" style="color:#a5b4fc">Velvet Dagger, Crown of Ash</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/neon-requiem-2099/" style="color:#a5b4fc">Neon Requiem 2099</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/ember-born-academy/" style="color:#a5b4fc">Ember-Born Academy</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/the-thirteenth-witness/" style="color:#a5b4fc">The Thirteenth Witness</a></li>
+        <li><a href="https://chaya.futureagentlab.com/novels/chronicles-of-the-clockwork-archive/" style="color:#a5b4fc">Chronicles of the Clockwork Archive</a></li>
       </ul>
       <p style="margin-top:16px">Genre highlights: <strong>Xianxia</strong>, <strong>LitRPG</strong>, <strong>Fantasy</strong>, <strong>Isekai</strong>, <strong>Sci-Fi</strong>, <strong>Romance</strong>, <strong>Mystery</strong></p>
     </div>

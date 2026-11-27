@@ -551,8 +551,8 @@ def rebuild_site_index(base_url="https://chaya.futureagentlab.com"):
     prefix = (base_url or "https://chaya.futureagentlab.com").rstrip("/")
     today_str = datetime.now().strftime("%Y-%m-%d")
 
-    # Generate static SEO stub pages under site/novel/<slug>/index.html
-    novel_pages_dir = SITE_DIR / "novel"
+    # Generate static SEO stub pages under site/novels/<slug>/index.html
+    novel_pages_dir = SITE_DIR / "novels"
     novel_pages_dir.mkdir(parents=True, exist_ok=True)
     for s in summaries:
         slug = s["slug"]
@@ -565,7 +565,7 @@ def rebuild_site_index(base_url="https://chaya.futureagentlab.com"):
         cov = s.get("cover") or f"{prefix}/assets/covers/{slug}.svg"
         if cov and not cov.startswith("http"):
             cov = f"{prefix}/{cov.lstrip('/')}"
-        page_url = f"{prefix}/novel/{urllib.parse.quote(slug)}/"
+        page_url = f"{prefix}/novels/{urllib.parse.quote(slug)}/"
         book_ld = {
             "@context": "https://schema.org",
             "@type": "Book",
@@ -641,12 +641,10 @@ def rebuild_site_index(base_url="https://chaya.futureagentlab.com"):
 
     urls = [
         f"  <url><loc>{prefix}/</loc><lastmod>{today_str}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>",
-        f"  <url><loc>{prefix}/#browse</loc><lastmod>{today_str}</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>",
-        f"  <url><loc>{prefix}/#rankings</loc><lastmod>{today_str}</lastmod><changefreq>daily</changefreq><priority>0.6</priority></url>",
     ]
     for s in summaries:
         qslug = urllib.parse.quote(s["slug"])
-        urls.append(f"  <url><loc>{prefix}/novel/{qslug}/</loc><lastmod>{s['updatedAt']}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>")
+        urls.append(f"  <url><loc>{prefix}/novels/{qslug}/</loc><lastmod>{s['updatedAt']}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>")
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
     (SITE_DIR / "sitemap.xml").write_text(sitemap, encoding="utf-8")
     return len(summaries)

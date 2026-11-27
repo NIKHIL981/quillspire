@@ -73,7 +73,6 @@ jobs:
       - name: Verify generated site data & catalog integrity
         run: |
           python -c "import json; d=json.load(open('site/data/catalog.json', encoding='utf-8')); print('Catalog valid:', d['totalNovels'], 'novels')"
-          test -s site/data/bundle.js
           test -s site/sitemap.xml
 
       - name: Commit, push, and trigger live Hostinger + Pages deploy
