@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updatedAt": "2026-11-28T11:00:40Z",
+  "updatedAt": "2026-11-28T12:51:22Z",
   "source_ids": [
     "manybooks:401025",
     "manybooks:396496",
@@ -34,7 +34,10 @@
     "manybooks:120916",
     "manybooks:120917",
     "manybooks:121193",
-    "manybooks:121318"
+    "manybooks:121318",
+    "standardebooks:beryl-de-zoete",
+    "openlibrary:/works/OL262554W",
+    "openlibrary:/works/OL8193416W"
   ],
   "slugs": [
     "the-paladin-chronicles",
@@ -69,7 +72,10 @@
     "the-arabian-nights-entertainments-vol-3",
     "the-arabian-nights-entertainments-vol-4",
     "nibelungendlied",
-    "welsh-fairy-tales-and-other-stories"
+    "welsh-fairy-tales-and-other-stories",
+    "confessions-of-zeno",
+    "the-complete-sherlock-holmes-4-novels-56-stories",
+    "the-picture-of-dorian-gray"
   ],
   "history": [
     {
@@ -368,6 +374,33 @@
       "chapters": 5,
       "words": 19530,
       "importedAt": "2026-11-28T10:59:54Z"
+    },
+    {
+      "sourceId": "standardebooks:beryl-de-zoete",
+      "slug": "confessions-of-zeno",
+      "title": "Confessions of Zeno",
+      "source": "Standard Ebooks",
+      "chapters": 10,
+      "words": 168528,
+      "importedAt": "2026-11-28T12:49:43Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL262554W",
+      "slug": "the-complete-sherlock-holmes-4-novels-56-stories",
+      "title": "The Complete Sherlock Holmes [4 novels, 56 stories]",
+      "source": "Open Library",
+      "chapters": 1101,
+      "words": 677573,
+      "importedAt": "2026-11-28T12:50:36Z"
+    },
+    {
+      "sourceId": "openlibrary:/works/OL8193416W",
+      "slug": "the-picture-of-dorian-gray",
+      "title": "The Picture of Dorian Gray",
+      "source": "Open Library",
+      "chapters": 21,
+      "words": 83638,
+      "importedAt": "2026-11-28T12:51:22Z"
     }
   ]
 }
