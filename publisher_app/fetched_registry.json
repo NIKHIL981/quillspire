@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updatedAt": "2026-11-27T13:32:53Z",
+  "updatedAt": "2026-11-28T11:00:40Z",
   "source_ids": [
     "manybooks:401025",
     "manybooks:396496",
@@ -28,7 +28,13 @@
     "manybooks:400669",
     "manybooks:400596",
     "manybooks:399882",
-    "manybooks:400659"
+    "manybooks:400659",
+    "manybooks:120914",
+    "manybooks:120915",
+    "manybooks:120916",
+    "manybooks:120917",
+    "manybooks:121193",
+    "manybooks:121318"
   ],
   "slugs": [
     "the-paladin-chronicles",
@@ -57,7 +63,13 @@
     "the-quiet-defector",
     "the-ranch-went-quiet",
     "the-trojan-treasure-conspiracy",
-    "this-time-she-stayed"
+    "this-time-she-stayed",
+    "the-arabian-nights-entertainments-vol-1",
+    "the-arabian-nights-entertainments-vol-2",
+    "the-arabian-nights-entertainments-vol-3",
+    "the-arabian-nights-entertainments-vol-4",
+    "nibelungendlied",
+    "welsh-fairy-tales-and-other-stories"
   ],
   "history": [
     {
@@ -302,6 +314,60 @@
       "chapters": 41,
       "words": 60950,
       "importedAt": "2026-11-27T13:32:53Z"
+    },
+    {
+      "sourceId": "manybooks:120914",
+      "slug": "the-arabian-nights-entertainments-vol-1",
+      "title": "The Arabian Nights Entertainments, vol 1",
+      "source": "ManyBooks",
+      "chapters": 5,
+      "words": 127126,
+      "importedAt": "2026-11-28T10:58:12Z"
+    },
+    {
+      "sourceId": "manybooks:120915",
+      "slug": "the-arabian-nights-entertainments-vol-2",
+      "title": "The Arabian Nights Entertainments, vol 2",
+      "source": "ManyBooks",
+      "chapters": 5,
+      "words": 132554,
+      "importedAt": "2026-11-28T10:58:18Z"
+    },
+    {
+      "sourceId": "manybooks:120916",
+      "slug": "the-arabian-nights-entertainments-vol-3",
+      "title": "The Arabian Nights Entertainments, vol 3",
+      "source": "ManyBooks",
+      "chapters": 5,
+      "words": 150969,
+      "importedAt": "2026-11-28T10:58:26Z"
+    },
+    {
+      "sourceId": "manybooks:120917",
+      "slug": "the-arabian-nights-entertainments-vol-4",
+      "title": "The Arabian Nights Entertainments, vol 4",
+      "source": "ManyBooks",
+      "chapters": 8,
+      "words": 139561,
+      "importedAt": "2026-11-28T10:58:32Z"
+    },
+    {
+      "sourceId": "manybooks:121193",
+      "slug": "nibelungendlied",
+      "title": "Nibelungendlied",
+      "source": "ManyBooks",
+      "chapters": 44,
+      "words": 114242,
+      "importedAt": "2026-11-28T10:59:37Z"
+    },
+    {
+      "sourceId": "manybooks:121318",
+      "slug": "welsh-fairy-tales-and-other-stories",
+      "title": "Welsh Fairy-Tales and Other Stories",
+      "source": "ManyBooks",
+      "chapters": 5,
+      "words": 19530,
+      "importedAt": "2026-11-28T10:59:54Z"
     }
   ]
 }
